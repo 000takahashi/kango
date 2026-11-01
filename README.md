@@ -59,11 +59,15 @@ v.level   // .green / .amber / .red
 
 ### AI エージェントに組み込む
 
-利用者の代わりにメールを読んだりリンクを開いたりする AI ほど、フィッシングに騙される危険があります。リンクを開く前・入力する前に `judge` を通し、赤ならその操作を止めて人に確かめてください。
+利用者の代わりにメールを読んだりリンクを開いたりする AI ほど、フィッシングに騙される危険があります。リンクを開く前・入力する前に `judge` を通し、青の時だけ通して、黄や赤ならその操作を止めて人に確かめてください。関所の作り方は [docs/integration.md](docs/integration.md#ai-エージェントの関所) にあります。
 
 ## 判定の規則
 
 [SPEC.md](SPEC.md) にすべて書いてあります。理由のコード（`not_in_ledger`・`mimic` など）も一覧にしています。
+
+## もっと詳しく（参考書）
+
+[docs/](docs/README.md) に、[設計の考え方](docs/design.md)・[守れる範囲](docs/threat-model.md)（手口ごとの勘合の答え）・[組み込み方](docs/integration.md)（アプリ・サーバー・LINE ボット・AI エージェント）・[会社と規則の足し方](docs/extending.md)・[用語集](docs/glossary.md) をまとめています。守れる範囲の表と組み込みの例は、CI が毎回動かして確かめています。
 
 ## 考え方の出どころ
 
@@ -113,7 +117,7 @@ Apache License 2.0（[LICENSE](LICENSE)）。
 
 ## English (summary)
 
-**kango** is a deterministic phishing check for Japanese messages. It verifies two "tallies": whether the brand a message claims is in *your own contract ledger*, and whether every link sits on that brand's *official domain* (with lookalike detection). No AI, no network access, no storage. Green means "the tallies match", never "this is genuine". Python and Swift implementations share the same rules ([SPEC.md](SPEC.md)) and test cases. Licensed under Apache-2.0.
+**kango** is a deterministic phishing check for Japanese messages. It verifies two "tallies": whether the brand a message claims is in *your own contract ledger*, and whether every link sits on that brand's *official domain* (with lookalike detection). No AI, no network access, no storage. Green means "the tallies match", never "this is genuine". Python and Swift implementations share the same rules ([SPEC.md](SPEC.md)) and test cases. Design notes, a threat model whose verdict table is executed by both test suites, and integration examples (in Japanese) are in [docs/](docs/README.md). Licensed under Apache-2.0.
 
 **Not a new idea.** kango applies the principle behind password-manager autofill (only on the registered domain) and passkeys / WebAuthn (credentials bound to the domain) to incoming messages. Red and green are decided by things an attacker cannot fake (your own ledger, and domains they do not own), not by how convincing the text is, so making the text more natural with AI does not, by itself, turn red into green.
 
