@@ -70,6 +70,10 @@ public enum Judge {
     static let urlPattern = try! NSRegularExpression(pattern: #"https?://[^\s「」<>"'）)]+"#, options: [.caseInsensitive])
     static let hostPattern = try! NSRegularExpression(pattern: #"^https?://([^/?#:]+)"#, options: [.caseInsensitive])
 
+    /// 電話番号＝0（または +81）で始まり、区切り（空白・かっこ・ハイフン類＝数字の間に3文字まで）を除いて10〜11桁（+81 の時は9〜10桁）。
+    /// 前後に数字が続くもの（注文番号など）は数えない。番号が本物かは確かめられない＝黄まで。
+    static let phonePattern = try! NSRegularExpression(pattern: #"(?<![0-9])(?:\+81[ ()\-‐−–ー]{0,3}|0)[1-9](?:[ ()\-‐−–ー]{0,3}[0-9]){8,9}(?![0-9])"#)
+
     static func norm(_ s: String) -> String { s.precomposedStringWithCompatibilityMapping.lowercased() }
 
     public static func host(of url: String) -> String? {
@@ -85,6 +89,13 @@ public enum Judge {
         let t = text.precomposedStringWithCompatibilityMapping
         return urlPattern.matches(in: t, range: NSRange(t.startIndex..., in: t))
             .compactMap { Range($0.range, in: t).map { String(t[$0]) } }
+    }
+
+    /// リンクを除いた文面に、電話番号が書かれているか（リンクの中の数字は数えない）
+    public static func hasPhoneNumber(_ text: String) -> Bool {
+        let t = text.precomposedStringWithCompatibilityMapping
+        let plain = urlPattern.stringByReplacingMatches(in: t, range: NSRange(t.startIndex..., in: t), withTemplate: " ")
+        return phonePattern.firstMatch(in: plain, range: NSRange(plain.startIndex..., in: plain)) != nil
     }
 
     public static func isOfficial(_ host: String, _ brand: Brand) -> Bool {
@@ -147,9 +158,19 @@ public enum Judge {
             }
         }
 
+        if hasPhoneNumber(text) {
+            say("phone", "電話番号が書かれています。この番号が本物かは確かめられません。電話する時は、公式サイトやカードの裏面など、自分で確かめた番号からかけてください。", .amber)
+        }
+
         let tricks = unique(pressure.filter { low.contains($0.word) }.map(\.reason))
         if !tricks.isEmpty {
             say("pressure", "詐欺によくある言いまわし：" + tricks.joined(separator: "、") + "。", .amber)
+        }
+
+        // 何ひとつ照らし合わせられなかった（配送・郵便・国税庁を名乗り、リンクが無い等）＝青にしない。
+        // 青は、何か1つでも割符が合った時（in_ledger・official）だけ。
+        if reasons.isEmpty {
+            say("nothing_to_check", "割符（契約している会社）や公式の住所へのリンクなど、照らし合わせられるものがありませんでした。", .amber)
         }
 
         return Verdict(level: level, reasons: reasons, claimed: claimed.map(\.id), hosts: hosts)

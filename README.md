@@ -27,7 +27,7 @@
 ### Python
 
 ```sh
-pip install "git+https://github.com/mamorune-com/kango@v0.1.0#subdirectory=python"
+pip install "git+https://github.com/mamorune-com/kango@v0.2.0#subdirectory=python"
 ```
 
 PyPI にある `kango` は、この部品とは関係のない別のものです。`pip install kango` では入りません。
@@ -81,10 +81,10 @@ v.level   // .green / .amber / .red
 
 勘合が見ているのは、文面の中の会社名・リンクの住所・急かす言葉だけです。次のことはできません。
 
-- **黄（確かめきれない）は、よく出ます。** 短縮 URL（行き先が見えない）や、どの会社を名乗っているか読み取れない連絡は、それだけでは青にも赤にもできず、黄になります。
+- **黄（確かめきれない）は、よく出ます。** 短縮 URL（行き先が見えない）、どの会社を名乗っているか読み取れない連絡、照らし合わせられるものが無い連絡（配送・郵便・国税庁を名乗っていて、リンクが無いもの）は、それだけでは青にも赤にもできず、黄になります。
 - **一覧にない会社は見分けられません（黄になります）。** 会社の一覧はまだ 18 社で、そのうち 5 社は公式の住所を確かめきれていません（`checked` 列が空欄）。
 - **台帳の登録漏れは、誤った赤になります。** 契約しているのに台帳に入れていない会社からの本物の連絡は、赤になります。
-- **リンクのない連絡は、住所を照合できません。** 電話番号へ誘う連絡は、名乗った会社が台帳にあると青になることがあります（急かす言葉があれば黄）。
+- **電話番号は照合できません。** 番号が本物かは確かめられないので、電話番号が書かれている連絡は、名乗った会社が台帳にあっても黄にします（青にはしません）。
 - **本物の住所が悪用された場合は、すり抜けます。** 会社のアカウントやサイトそのものが乗っ取られた場合や、公式の住所の中にある転送の仕組み（オープンリダイレクト）を使われた場合は、青になりえます。
 - **会社を名乗らない詐欺は、黄までです。** SNS 型投資詐欺やロマンス詐欺のように、会社を名乗らない連絡は赤にできません。
 - **受け取るのは文字だけです。** 画像の中の文字や QR コードは、呼び出す側で文字にしてから渡してください。電話の音声や、端末に入り込むウイルスは扱えません。
@@ -117,4 +117,4 @@ Apache License 2.0（[LICENSE](LICENSE)）。
 
 **Why isn't this common? (our view)** It needs a per-user contract ledger, which is a privacy problem for any provider to collect; kango keeps it on the device. It earns little. And the industry has mostly invested in blocklists, which lag behind newly created phishing sites. kango complements blocklists rather than replacing them.
 
-**Limits.** Amber is common by design. Brands missing from the list (18 so far, 5 not yet verified) are not covered, and a company you use but did not add to your ledger shows red. Messages without links (for example "call this number") cannot be checked and may show green if the claimed brand is in your ledger. A genuinely compromised official account or site, or an open redirect on an official domain, can pass as green. Scams that claim no brand (investment, romance) stay amber. Input is text only.
+**Limits.** Amber is common by design. A message with nothing to check (for example, one that names a delivery company or the tax agency but has no link) is amber, never green. Brands missing from the list (18 so far, 5 not yet verified) are not covered, and a company you use but did not add to your ledger shows red. Phone numbers cannot be verified, so a message that contains one is never green, even if the claimed brand is in your ledger. A genuinely compromised official account or site, or an open redirect on an official domain, can pass as green. Scams that claim no brand (investment, romance) stay amber. Input is text only.
