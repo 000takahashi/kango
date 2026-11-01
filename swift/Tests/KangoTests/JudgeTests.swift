@@ -45,6 +45,20 @@ final class JudgeTests: XCTestCase {
         XCTAssertFalse(words.contains("安全"))
     }
 
+    func testOfficialSubsidiaryDomainsAreNotRed() {
+        // 各社の公式ページで確かめた住所（2026-10-31）＝ここが赤になると本物の連絡を偽物と言ってしまう（Python と同じ見本）
+        let all = Set(Catalog.bundled.map(\.id))
+        let cases: [(String, String)] = [
+            ("三井住友カード", "contact.vpass.ne.jp"), ("楽天カード", "support.rakuten-card.jp"),
+            ("PayPay", "paypay.co.jp"), ("JCB", "www.global.jcb"), ("ドコモ", "www.nttdocomo.co.jp"),
+            ("au ID", "id.auone.jp"), ("ワイモバイル", "www.ymobile.jp"), ("メルペイ", "jp.merpay.com"),
+        ]
+        for (name, host) in cases {
+            let v = Judge.judge(text: "【\(name)】ご確認 https://\(host)/", ledger: all)
+            XCTAssertEqual(v.level, .green, "\(name) \(host)")
+        }
+    }
+
     func testShortenerAndIDN() {
         XCTAssertEqual(Judge.judge(text: "Amazon https://bit.ly/abc", ledger: ledger).level, .amber)
         XCTAssertEqual(Judge.judge(text: "Amazon https://xn--amazn-mua.com/", ledger: ledger).level, .red)
