@@ -1,0 +1,7 @@
+# 会社一覧は「青」を決める正そのもの＝偽の公式ドメインを混ぜられると、偽サイトが青になる。
+# 変更には必ず管理者の承認を要る（Settings → Branches で「Require review from Code Owners」を有効にすること）。
+/data/                                  @000takahashi
+/python/kango/brands.csv                @000takahashi
+/swift/Sources/Kango/Resources/         @000takahashi
+/python/kango/__init__.py               @000takahashi
+/swift/Sources/Kango/Judge.swift        @000takahashi
