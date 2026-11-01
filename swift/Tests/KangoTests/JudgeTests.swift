@@ -84,4 +84,30 @@ final class JudgeTests: XCTestCase {
             XCTAssertFalse(codes(v).contains("phone"), text)
         }
     }
+
+    func testNothingToCheckIsAmber() {
+        // 配送・郵便・国税庁（誰にでも届く会社）はリンクの住所でしか確かめられない＝リンクが無ければ何も照合していない＝青にしない
+        for text in [
+            "【ヤマト運輸】お荷物のお届けについてのお知らせです",
+            "【ヤマト運輸】お荷物のお届けについて、LINEで「yamato-help」を友だち追加してください",
+            "【国税庁】還付金があります。このメールに返信してください",
+            "【日本郵便】お届けについてご案内します。このメッセージに返信してください",
+        ] {
+            let v = Judge.judge(text: text, ledger: ledger)
+            XCTAssertEqual(v.level, .amber, text)
+            XCTAssertEqual(codes(v), ["nothing_to_check"], text)
+        }
+    }
+
+    func testSomethingMatchedStaysGreen() {
+        // 何か1つでも割符が合えば これまでどおり青（台帳にある会社・公式の住所）
+        for (text, code) in [
+            ("【楽天カード】いつもご利用ありがとうございます", "in_ledger"),
+            ("【ヤマト運輸】お届け予定のお知らせ https://www.kuronekoyamato.co.jp/", "official"),
+        ] {
+            let v = Judge.judge(text: text, ledger: ledger)
+            XCTAssertEqual(v.level, .green, text)
+            XCTAssertEqual(codes(v), [code], text)
+        }
+    }
 }

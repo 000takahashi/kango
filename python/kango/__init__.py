@@ -141,6 +141,11 @@ def judge(text: str, ledger: Iterable[str], brands: Optional[List[dict]] = None)
     if tricks:
         say("pressure", "詐欺によくある言いまわし：" + "、".join(tricks) + "。", 1)
 
+    # 何ひとつ照らし合わせられなかった（配送・郵便・国税庁を名乗り、リンクが無い等）＝青にしない。
+    # 青は、何か1つでも割符が合った時（in_ledger・official）だけ。
+    if not reasons:
+        say("nothing_to_check", "割符（契約している会社）や公式の住所へのリンクなど、照らし合わせられるものがありませんでした。", 1)
+
     level = ("green", "amber", "red")[rank]
     return {"level": level, "head": HEADS[level], "reasons": reasons, "todo": TODO[level],
             "helplines": HELPLINES if level != "green" else [],

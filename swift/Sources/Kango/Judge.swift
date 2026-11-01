@@ -167,6 +167,12 @@ public enum Judge {
             say("pressure", "詐欺によくある言いまわし：" + tricks.joined(separator: "、") + "。", .amber)
         }
 
+        // 何ひとつ照らし合わせられなかった（配送・郵便・国税庁を名乗り、リンクが無い等）＝青にしない。
+        // 青は、何か1つでも割符が合った時（in_ledger・official）だけ。
+        if reasons.isEmpty {
+            say("nothing_to_check", "割符（契約している会社）や公式の住所へのリンクなど、照らし合わせられるものがありませんでした。", .amber)
+        }
+
         return Verdict(level: level, reasons: reasons, claimed: claimed.map(\.id), hosts: hosts)
     }
 
