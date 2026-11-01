@@ -87,3 +87,39 @@ def test_something_matched_stays_green():
                        ("【ヤマト運輸】お届け予定のお知らせ https://www.kuronekoyamato.co.jp/", "official")]:
         r = tr.judge(text, LEDGER)
         assert r["level"] == "green" and _codes(r) == [code], (text, r["reasons"])
+
+
+def test_disguised_links_show_the_real_destination():
+    # 「@」や「\」で本当の行き先をごまかす書き方・壊れた住所＝ブラウザが実際に開く住所で照合する
+    for text, host, code in [
+        ("【楽天カード】ご確認 https://www.rakuten-card.co.jp:443@evil.example/login", "evil.example", "disguised"),
+        ("【楽天カード】ご確認 https://evil.example\\@www.rakuten-card.co.jp/login", "evil.example", "disguised"),
+        ("【楽天カード】ご確認 https://evil.example@www.rakuten-card.co.jp/login", "www.rakuten-card.co.jp", "disguised"),
+        ("【楽天カード】ご確認 https:/evil.example/login", "evil.example", "off_domain"),
+        ("【楽天カード】ご確認 https://evil.example%2f.rakuten-card.co.jp/login", "evil.example%2f.rakuten-card.co.jp", "idn"),
+    ]:
+        r = tr.judge(text, LEDGER)
+        assert r["level"] == "red" and code in _codes(r) and r["hosts"] == [host], (text, r["reasons"], r["hosts"])
+
+
+def test_links_without_scheme_are_checked():
+    # https:// の無いリンクも、メッセージアプリでは押せる＝住所として照合する
+    for text, level, code in [
+        ("【楽天カード】ご利用確認はこちら rakuten-card-login.com", "red", "mimic"),
+        ("【楽天カード】ご利用確認 www.rakuten-card.co.jp.evil.example/abc", "red", "mimic"),
+        ("【Amazon】ご注文の確認は Amazon.co.jp で", "green", "official"),
+    ]:
+        r = tr.judge(text, LEDGER)
+        assert r["level"] == level and code in _codes(r), (text, r["reasons"])
+
+
+def test_things_that_are_not_links():
+    # ファイル名・メールアドレス・略語・文末の「。」「、」・https:// の無いリンクの中の数字は、読み違えない
+    for text in ["【楽天カード】明細（meisai.pdf）をご確認ください",
+                 "【楽天カード】お問い合わせは support@rakuten-card.co.jp まで",
+                 "【楽天カード】ver.2.0 の新機能。e.g. や No.1 など",
+                 "【楽天カード】詳しくはこちら：https://www.rakuten-card.co.jp。",
+                 "【楽天カード】ご確認 https://www.rakuten-card.co.jp、ご不明点はアプリで",
+                 "【楽天カード】ご確認 rakuten-card.co.jp/e-navi/?id=0312345678"]:
+        r = tr.judge(text, LEDGER)
+        assert r["level"] == "green", (text, r["reasons"])
