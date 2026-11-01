@@ -29,7 +29,7 @@ python3 scripts/sync_brands.py          # Python と Swift の同梱データを
 cd python && python -m pytest -q        # Python のテスト
 ```
 
-- 本物の住所が青になる見本を、`python/tests/test_judge.py` の `test_official_subsidiary_domains_are_not_red` と、Swift の同じテストに1行ずつ足します。
+- 本物の住所が青になる見本を、共通の見本（[conformance/cases.json](../conformance/cases.json)）に1件足します（台帳はその会社だけ）。Python と Swift のテストが、どちらもこの見本を読み込みます。
 - Pull Request には、確かめた**公式ページの URL**を必ず書きます。管理者が自分で開いて確かめてから取り込みます。
 
 ## 規則を足す・直す
@@ -49,7 +49,7 @@ cd python && python -m pytest -q        # Python のテスト
 2. **SPEC.md を先に直す。** 規則の正は SPEC.md です。新しい理由のコードは表に足します。
 3. **Python（`python/kango/__init__.py`）を直す。**
 4. **Swift（`swift/Sources/Kango/Judge.swift`）を同じように直す。** 正規表現は、Python と同じ文字列にします。文言も同じにします。
-5. **両方のテストに、同じ見本を足す。** 「こうなるべき」見本と、「こうならないべき」見本（本物の連絡が誤って黄・赤にならないこと）の両方を入れます。
+5. **共通の見本（[conformance/cases.json](../conformance/cases.json)）に見本を足す。** Python と Swift のテストが、どちらもこの見本を読み込みます。「こうなるべき」見本と、「こうならないべき」見本（本物の連絡が誤って黄・赤にならないこと）の両方を入れます。答えは SPEC.md から先に考えて書き、`python -m kango --json` で今の勘合の答えと見比べます（書き方は [conformance/README.md](../conformance/README.md)）。
 6. **できないことが変わったら、README の「できないこと」と [守れる範囲](threat-model.md) を直す。** 表は勘合を動かした答えをそのまま書きます（テストが確かめます）。
 7. **CI（data・python・swift）がすべて緑になってから** Pull Request を出します。
 
