@@ -1,0 +1,39 @@
+name: release-check
+# 版（v0.1.0 など）を付けたら、外の開発者と同じやり方で「URL から入れて動くか」を確かめる。
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  swift-consumer:
+    runs-on: macos-15
+    steps:
+      - name: Swift Package Manager で URL から入れて動かす
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p consumer/Sources/Consumer && cd consumer
+          cat > Package.swift <<EOS
+          // swift-tools-version:5.9
+          import PackageDescription
+          let package = Package(
+              name: "Consumer",
+              platforms: [.macOS(.v13)],
+              dependencies: [.package(url: "https://github.com/${GITHUB_REPOSITORY}", exact: "${VERSION}")],
+              targets: [.executableTarget(name: "Consumer", dependencies: [.product(name: "Kango", package: "kango")])]
+          )
+          EOS
+          cat > Sources/Consumer/main.swift <<'EOS'
+          import Kango
+          let v = Judge.judge(text: "【楽天カード】ご請求額が確定しました https://www.rakuten-card.co.jp/", ledger: ["rakuten"])
+          print(v.level)
+          if v.level != .green { fatalError("expected green") }
+          EOS
+          swift run
+  python-consumer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: pip で URL から入れて動かす
+        run: |
+          pip install "git+https://github.com/${GITHUB_REPOSITORY}@${GITHUB_REF_NAME}#subdirectory=python"
+          python -c "import kango, sys; r = kango.judge('【楽天カード】ご請求額が確定しました https://www.rakuten-card.co.jp/', ledger=['rakuten']); print(r['level']); sys.exit(r['level'] != 'green')"

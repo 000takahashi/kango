@@ -13,6 +13,11 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install pytest && cd python && python -m pytest -q
+      # 外の開発者と同じく「部品として入れて」動くか（同梱の会社一覧ごと入るか）も確かめる
+      - run: |
+          pip install ./python
+          cd "$RUNNER_TEMP"
+          python -c "import kango, sys; r = kango.judge('【楽天カード】ご請求額が確定しました https://www.rakuten-card.co.jp/', ledger=['rakuten']); print(r['level']); sys.exit(r['level'] != 'green')"
   swift:
     runs-on: macos-15
     steps:
