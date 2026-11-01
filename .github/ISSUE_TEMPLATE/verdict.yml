@@ -1,0 +1,54 @@
+name: 判定がおかしい（本物の連絡が黄・赤になる など）
+description: 勘合の答えが、あるべき色と違う時。偽物の連絡が青になる時は、ここではなく SECURITY.md の方法でお知らせください。
+title: "[判定] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **偽物の連絡が青になる時は、公開の Issue に書かないでください。** [SECURITY.md](https://github.com/mamorune-com/kango/security/policy) の方法で、非公開でお知らせください。
+
+        実在の人の名前・電話番号・住所・カード番号などは、消してから書いてください。
+  - type: textarea
+    id: text
+    attributes:
+      label: 文面
+      description: 届いた文面です。個人の情報は消してください。リンクの住所は、そのまま書いてください（押せないように、そのまま囲んで表示します）。
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: ledger
+    attributes:
+      label: 台帳
+      description: 台帳に入れていた会社の id（python -m kango --brands で一覧を出せます）
+      placeholder: rakuten,docomo
+  - type: dropdown
+    id: got
+    attributes:
+      label: 今の答え
+      options:
+        - 青
+        - 黄
+        - 赤
+    validations:
+      required: true
+  - type: dropdown
+    id: want
+    attributes:
+      label: あるべき答え
+      options:
+        - 青
+        - 黄
+        - 赤
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: そう考える理由
+      description: 本物の連絡なら、その会社自身の公式ページで住所を確かめた時の URL があると助かります。
+  - type: input
+    id: version
+    attributes:
+      label: 勘合の版
+      placeholder: v0.2.0

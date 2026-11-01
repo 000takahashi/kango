@@ -45,7 +45,7 @@ cd python && python -m pytest -q        # Python のテスト
 
 ### 手順
 
-1. **実際にありそうな文面で、困っていることを書く。** Issue に「この文面が、今はこの色になる。本当はこうあるべき」と書きます。実在の人の名前・電話番号・住所は入れず、攻撃側の住所には `example`（`evil.example` など、例のために取っておかれた住所）を使います。
+1. **実際にありそうな文面で、困っていることを書く。** Issue に「この文面が、今はこの色になる。本当はこうあるべき」と書きます（Issue の「判定がおかしい」のひな形が使えます）。**偽物の連絡が青になる時は、Issue ではなく [SECURITY.md](../SECURITY.md) の方法で、非公開で知らせます。**実在の人の名前・電話番号・住所は入れず、攻撃側の住所には `example`（`evil.example` など、例のために取っておかれた住所）を使います。
 2. **SPEC.md を先に直す。** 規則の正は SPEC.md です。新しい理由のコードは表に足します。
 3. **Python（`python/kango/__init__.py`）を直す。**
 4. **Swift（`swift/Sources/Kango/Judge.swift`）を同じように直す。** 正規表現は、Python と同じ文字列にします。文言も同じにします。
@@ -55,4 +55,4 @@ cd python && python -m pytest -q        # Python のテスト
 
 ### 版の上げ方
 
-答えが変わる変更は、版（`python/pyproject.toml` の `version` と、README の `pip` の行）を上げます。リリースを作ると、`release-check` が外の開発者と同じやり方（URL から入れる）で動くかを確かめます。リリースの説明には、どんな文面の色が変わるのかを書いてください。
+答えが変わる変更は、版（`python/pyproject.toml` の `version` と、README の `pip` と Swift の行）を上げ、[CHANGELOG.md](../CHANGELOG.md) の「答えが変わる変更」に、どんな文面の色がどう変わるかを書きます。リリースを作ると、`release-check` が外の開発者と同じやり方（URL から入れる）で動くかを確かめます。リリースの説明には、どんな文面の色が変わるのかを書いてください。
