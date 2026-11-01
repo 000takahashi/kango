@@ -44,7 +44,21 @@ PRESSURE = (
     ("未納", "未納を理由に払わせる"), ("不在", "不在通知を装う"),
     ("ご本人確認", "本人確認を名目に入力させる"), ("異常なログイン", "不正ログインで不安をあおる"),
 )
-_URL = re.compile(r"https?://[^\s「」<>\"'）)]+", re.I)
+# リンク＝ http: か https: のあとに / か \ が続く文字の並び（ブラウザは \ も / とみなし、/ が1つでも開く）。
+# 空白・かぎかっこ・山かっこ・引用符・閉じかっこ・読点「、」で終わる。
+_URL = re.compile(r"https?:[/\\]+[^\s「」『』【】<>\"'）)、]+", re.I)
+# リンクの「住所の部分」（最初の / \ ? # まで）
+_AUTH = re.compile(r"https?:[/\\]+([^/\\?#]*)", re.I)
+# 見た目の「住所の部分」（\ を区切りと思わずに読んだ時。ここに @ や \ があれば見せかけ）
+_SHOWN = re.compile(r"https?:[/\\]+([^/?#]*)", re.I)
+# https:// の無いリンク（rakuten-card-login.com/abc など。メッセージアプリはこれも押せるリンクにする）。
+# 英数字とハイフンの並びを . でつなぎ、最後が英字2〜24文字。前後に英数字や @ が付くもの（メールアドレスなど）は数えない。
+_BARE = re.compile(r"(?<![a-z0-9@._%+\-])((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,24})(?![a-z0-9\-@])"
+                   r"(?:[/?#][^\s「」『』【】<>\"'）)、]*)?", re.I)
+# ファイル名（meisai.pdf など）は住所として数えない（どれもトップレベルドメインではない）
+_FILE_EXT = frozenset("pdf html htm jpg jpeg png gif txt csv doc docx xls xlsx ppt pptx js css json xml php exe apk".split())
+# 住所にふつう使う文字（英小文字・数字・. ・-）。これ以外を含む住所＝見た目を似せる手口か、壊れた住所
+_HOST_OK = re.compile(r"[a-z0-9.\-]+")
 # 電話番号＝0（または +81）で始まり、区切り（空白・かっこ・ハイフン類＝数字の間に3文字まで）を除いて10〜11桁（+81 の時は9〜10桁）。
 # 前後に数字が続くもの（注文番号など）は数えない。番号が本物かは確かめられない＝黄まで。
 _PHONE = re.compile(r"(?<![0-9])(?:\+81[ ()\-‐−–ー]{0,3}|0)[1-9](?:[ ()\-‐−–ー]{0,3}[0-9]){8,9}(?![0-9])")
@@ -66,8 +80,25 @@ def _norm(s: str) -> str:
 
 
 def host_of(url: str) -> Optional[str]:
-    m = re.match(r"https?://([^/?#:]+)", url, re.I)
-    return m.group(1).lower().rstrip(".") if m else None
+    """リンクの本当の行き先の住所（ホスト名）。ブラウザと同じ読み方をする：
+    \\ は / と同じ・@ より前（利用者名とパスワード）は住所ではない・: の後ろは番号（ポート）・「。」は「.」と同じ。"""
+    m = _AUTH.match(url)
+    if not m:
+        return None
+    h = m.group(1).rsplit("@", 1)[-1]
+    h = h.split("]", 1)[0] + "]" if h.startswith("[") else h.split(":", 1)[0]
+    h = h.replace("。", ".").lower().rstrip(".")
+    return h or None
+
+
+def _scan(text: str):
+    """文面を、リンク・https:// の無いリンクの住所・それ以外の文字（電話番号を探す所）に分ける。"""
+    t = unicodedata.normalize("NFKC", text or "")
+    urls = _URL.findall(t)
+    rest = _URL.sub(" ", t)
+    bare = [m.group(1).lower() for m in _BARE.finditer(rest)
+            if m.group(1).rsplit(".", 1)[-1].lower() not in _FILE_EXT]
+    return urls, bare, _BARE.sub(" ", rest)
 
 
 def is_official(host: str, brand: dict) -> bool:
@@ -91,7 +122,8 @@ def judge(text: str, ledger: Iterable[str], brands: Optional[List[dict]] = None)
     owned = set(ledger or ())
     low = _norm(text)
     claimed = [b for b in brands if any(_norm(w) in low for w in b["words"])]
-    hosts = [h for h in (host_of(u) for u in _URL.findall(unicodedata.normalize("NFKC", text or ""))) if h]
+    urls, bare, plain = _scan(text)
+    hosts = [h for h in (host_of(u) for u in urls) if h] + bare
     reasons: List[dict] = []
     rank = 0   # 0 green / 1 amber / 2 red
 
@@ -108,12 +140,17 @@ def judge(text: str, ledger: Iterable[str], brands: Optional[List[dict]] = None)
         elif b["kind"] == "contract":
             say("in_ledger", f"「{b['name']}」はあなたの割符にあります。", 0)
 
+    # 「@」や「\」で本当の行き先をごまかす書き方（https://本物の住所@偽の住所/・https://偽の住所\@本物の住所/）
+    tricked = [host_of(u) for u in urls if any(c in _SHOWN.match(u).group(1) for c in "@\\")]
+    for h in dict.fromkeys(h for h in tricked if h):
+        say("disguised", f"リンクの住所に「@」や「\\」を使った見せかけがあります。本当の行き先は「{h}」です。", 2)
+
     for h in dict.fromkeys(hosts):   # 同じ住所は1回だけ
         if h in SHORTENERS:
             say("shortener", f"リンク（{h}）は短縮URLで、行き先が見えません。", 1)
             continue
-        if h.startswith("xn--") or ".xn--" in h:
-            say("idn", f"リンク先「{h}」は、見た目を似せやすい特殊な文字の住所です。", 2)
+        if h.startswith("xn--") or ".xn--" in h or not _HOST_OK.fullmatch(h):
+            say("idn", f"リンク先「{h}」は、ふつうの住所には使わない文字を含んでいます。見た目を似せる手口に使われます。", 2)
             continue
         owner = next((b for b in brands if is_official(h, b)), None)
         if claimed and not any(is_official(h, b) for b in claimed):
@@ -131,8 +168,7 @@ def judge(text: str, ledger: Iterable[str], brands: Optional[List[dict]] = None)
             else:
                 say("unknown_domain", f"リンク先「{h}」は、登録された公式の住所ではありません。", 1)
 
-    # リンクの中の数字は数えない（住所はリンクとして照合済み）
-    plain = _URL.sub(" ", unicodedata.normalize("NFKC", text or ""))
+    # リンク（https:// の無いものも）の中の数字は数えない（住所はリンクとして照合済み）
     if _PHONE.search(plain):
         say("phone", "電話番号が書かれています。この番号が本物かは確かめられません。"
             "電話する時は、公式サイトやカードの裏面など、自分で確かめた番号からかけてください。", 1)

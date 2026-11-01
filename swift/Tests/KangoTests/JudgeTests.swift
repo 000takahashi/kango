@@ -110,4 +110,50 @@ final class JudgeTests: XCTestCase {
             XCTAssertEqual(codes(v), [code], text)
         }
     }
+
+    func testDisguisedLinksShowTheRealDestination() {
+        // 「@」や「\」で本当の行き先をごまかす書き方・壊れた住所＝ブラウザが実際に開く住所で照合する
+        let cases: [(String, String, String)] = [
+            ("【楽天カード】ご確認 https://www.rakuten-card.co.jp:443@evil.example/login", "evil.example", "disguised"),
+            ("【楽天カード】ご確認 https://evil.example\\@www.rakuten-card.co.jp/login", "evil.example", "disguised"),
+            ("【楽天カード】ご確認 https://evil.example@www.rakuten-card.co.jp/login", "www.rakuten-card.co.jp", "disguised"),
+            ("【楽天カード】ご確認 https:/evil.example/login", "evil.example", "off_domain"),
+            ("【楽天カード】ご確認 https://evil.example%2f.rakuten-card.co.jp/login", "evil.example%2f.rakuten-card.co.jp", "idn"),
+        ]
+        for (text, host, code) in cases {
+            let v = Judge.judge(text: text, ledger: ledger)
+            XCTAssertEqual(v.level, .red, text)
+            XCTAssertTrue(codes(v).contains(code), text)
+            XCTAssertEqual(v.hosts, [host], text)
+        }
+    }
+
+    func testLinksWithoutSchemeAreChecked() {
+        // https:// の無いリンクも、メッセージアプリでは押せる＝住所として照合する
+        let cases: [(String, Verdict.Level, String)] = [
+            ("【楽天カード】ご利用確認はこちら rakuten-card-login.com", .red, "mimic"),
+            ("【楽天カード】ご利用確認 www.rakuten-card.co.jp.evil.example/abc", .red, "mimic"),
+            ("【Amazon】ご注文の確認は Amazon.co.jp で", .green, "official"),
+        ]
+        for (text, level, code) in cases {
+            let v = Judge.judge(text: text, ledger: ledger)
+            XCTAssertEqual(v.level, level, text)
+            XCTAssertTrue(codes(v).contains(code), text)
+        }
+    }
+
+    func testThingsThatAreNotLinks() {
+        // ファイル名・メールアドレス・略語・文末の「。」「、」・https:// の無いリンクの中の数字は、読み違えない
+        for text in [
+            "【楽天カード】明細（meisai.pdf）をご確認ください",
+            "【楽天カード】お問い合わせは support@rakuten-card.co.jp まで",
+            "【楽天カード】ver.2.0 の新機能。e.g. や No.1 など",
+            "【楽天カード】詳しくはこちら：https://www.rakuten-card.co.jp。",
+            "【楽天カード】ご確認 https://www.rakuten-card.co.jp、ご不明点はアプリで",
+            "【楽天カード】ご確認 rakuten-card.co.jp/e-navi/?id=0312345678",
+        ] {
+            let v = Judge.judge(text: text, ledger: ledger)
+            XCTAssertEqual(v.level, .green, text)
+        }
+    }
 }
