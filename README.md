@@ -26,6 +26,12 @@
 
 ### Python
 
+```sh
+pip install "git+https://github.com/mamorune-com/kango@v0.1.0#subdirectory=python"
+```
+
+PyPI にある `kango` は、この部品とは関係のない別のものです。`pip install kango` では入りません。
+
 ```python
 from kango import judge
 
