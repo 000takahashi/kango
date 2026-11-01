@@ -65,6 +65,30 @@ v.level   // .green / .amber / .red
 
 [SPEC.md](SPEC.md) にすべて書いてあります。理由のコード（`not_in_ledger`・`mimic` など）も一覧にしています。
 
+## 考え方の出どころ
+
+勘合は新しい発明ではありません。パスワード管理アプリは、登録したサイトの本物の住所でだけパスワードを自動入力します。パスキー（FIDO2 / WebAuthn）も、登録したドメインでしか使えません。どちらも「本物の住所と照らし合わせる」という、すでに実績のある原理です。勘合は、この原理を、届いたメール・SMS・LINE の文面に当てはめたものです。
+
+赤と青を分けるのは文章のうまさではなく、攻撃する側が偽れないもの（あなたの契約台帳と、相手が持っていない公式ドメイン）です。そのため、AI で文章をどれだけ自然にしても、それだけで赤が青に変わることはありません。
+
+## なぜ広まっていないのか（私たちの見立て）
+
+- **契約台帳が要ります。** 「この人はどの会社と契約しているか」を事業者が集めると、それ自体が大きなプライバシーの問題になります。勘合は台帳を利用者の端末の中だけに置き、外へ送りません。
+- **お金になりにくい仕組みです。** 広告や手数料を生みにくく、事業として取り組む理由が小さいものです。
+- **これまでの対策は「危ない住所の一覧（ブロックリスト）」が中心でした。** 一覧はとても大切ですが、作られたばかりの偽サイトには追いつけません。勘合は「本物の住所の一覧」と照らし合わせるので、会社を名乗った連絡なら、作られたばかりの偽サイトでも「公式の住所ではない」と分かります。ブロックリストに代わるものではなく、組み合わせて使うものです。
+
+## できないこと
+
+勘合が見ているのは、文面の中の会社名・リンクの住所・急かす言葉だけです。次のことはできません。
+
+- **黄（確かめきれない）は、よく出ます。** 短縮 URL（行き先が見えない）や、どの会社を名乗っているか読み取れない連絡は、それだけでは青にも赤にもできず、黄になります。
+- **一覧にない会社は見分けられません（黄になります）。** 会社の一覧はまだ 18 社で、そのうち 5 社は公式の住所を確かめきれていません（`checked` 列が空欄）。
+- **台帳の登録漏れは、誤った赤になります。** 契約しているのに台帳に入れていない会社からの本物の連絡は、赤になります。
+- **リンクのない連絡は、住所を照合できません。** 電話番号へ誘う連絡は、名乗った会社が台帳にあると青になることがあります（急かす言葉があれば黄）。
+- **本物の住所が悪用された場合は、すり抜けます。** 会社のアカウントやサイトそのものが乗っ取られた場合や、公式の住所の中にある転送の仕組み（オープンリダイレクト）を使われた場合は、青になりえます。
+- **会社を名乗らない詐欺は、黄までです。** SNS 型投資詐欺やロマンス詐欺のように、会社を名乗らない連絡は赤にできません。
+- **受け取るのは文字だけです。** 画像の中の文字や QR コードは、呼び出す側で文字にしてから渡してください。電話の音声や、端末に入り込むウイルスは扱えません。
+
 ## 会社の一覧
 
 [data/brands.csv](data/brands.csv) が正です。`checked` 列は、その会社の公式ページで住所を確かめた日付です。**空欄の会社は、まだ公式の一覧で確かめられていません。** 追加・修正の手順は [CONTRIBUTING.md](CONTRIBUTING.md) をご覧ください。
@@ -88,3 +112,9 @@ Apache License 2.0（[LICENSE](LICENSE)）。
 ## English (summary)
 
 **kango** is a deterministic phishing check for Japanese messages. It verifies two "tallies": whether the brand a message claims is in *your own contract ledger*, and whether every link sits on that brand's *official domain* (with lookalike detection). No AI, no network access, no storage. Green means "the tallies match", never "this is genuine". Python and Swift implementations share the same rules ([SPEC.md](SPEC.md)) and test cases. Licensed under Apache-2.0.
+
+**Not a new idea.** kango applies the principle behind password-manager autofill (only on the registered domain) and passkeys / WebAuthn (credentials bound to the domain) to incoming messages. Red and green are decided by things an attacker cannot fake (your own ledger, and domains they do not own), not by how convincing the text is, so making the text more natural with AI does not, by itself, turn red into green.
+
+**Why isn't this common? (our view)** It needs a per-user contract ledger, which is a privacy problem for any provider to collect; kango keeps it on the device. It earns little. And the industry has mostly invested in blocklists, which lag behind newly created phishing sites. kango complements blocklists rather than replacing them.
+
+**Limits.** Amber is common by design. Brands missing from the list (18 so far, 5 not yet verified) are not covered, and a company you use but did not add to your ledger shows red. Messages without links (for example "call this number") cannot be checked and may show green if the claimed brand is in your ledger. A genuinely compromised official account or site, or an open redirect on an official domain, can pass as green. Scams that claim no brand (investment, romance) stay amber. Input is text only.
