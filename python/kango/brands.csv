@@ -1,0 +1,19 @@
+id,name,kind,words,domains,stems,checked
+amazon,Amazon,contract,amazon|アマゾン,amazon.co.jp|amazon.com|amazon.jp,amazon,
+rakuten,楽天,contract,楽天|rakuten,rakuten.co.jp|rakuten-card.co.jp|rakuten-bank.co.jp|rakuten.jp|rakuten-card.jp|rakuten-static.com|rakuten-wallet.co.jp|rakuten-insurance.co.jp,rakuten,2026-10-31
+mercari,メルカリ,contract,メルカリ|mercari|メルペイ|merpay,mercari.com|merpay.com|mercari-shops.com,mercari,2026-10-31
+paypay,PayPay,contract,paypay|ペイペイ,paypay.ne.jp|paypay.co.jp|paypay-corp.co.jp|paypay-business.jp,paypay,2026-10-31
+yucho,ゆうちょ銀行,contract,ゆうちょ,jp-bank.japanpost.jp,yucho|jp-bank,2026-10-31
+smbccard,三井住友カード,contract,三井住友カード|vpass,smbc-card.com|vpass.ne.jp,smbc|vpass,2026-10-31
+smbc,三井住友銀行,contract,三井住友銀行,smbc.co.jp,smbc,2026-10-31
+mufg,三菱UFJ銀行,contract,三菱ufj,bk.mufg.jp|mufg.jp,mufg,2026-10-31
+jcb,JCB,contract,jcb,jcb.co.jp|global.jcb,jcb,2026-10-31
+aeon,イオンカード,contract,イオンカード|イオン銀行,aeon.co.jp|aeonbank.co.jp,aeon,
+docomo,ドコモ,contract,ドコモ|docomo,docomo.ne.jp|nttdocomo.co.jp,docomo,2026-10-31
+au,au,contract,kddi|auじぶん|au id|au pay,au.com|kddi.com|auone.jp,kddi,2026-10-31
+softbank,ソフトバンク,contract,ソフトバンク|softbank|ワイモバイル|y!mobile|linemo,softbank.jp|ymobile.jp|linemo.jp,softbank,2026-10-31
+apple,Apple,contract,apple|アップル|icloud,apple.com|icloud.com,apple|icloud,
+yamato,ヤマト運輸,everyone,ヤマト|クロネコ,kuronekoyamato.co.jp,kuroneko|yamato,
+sagawa,佐川急便,everyone,佐川,sagawa-exp.co.jp,sagawa,
+jppost,日本郵便,everyone,日本郵便|郵便局,japanpost.jp,japanpost|japan-post,2026-10-31
+nta,国税庁,everyone,国税庁|e-tax|税務署,nta.go.jp,e-tax|etax|nta-,2026-10-31
