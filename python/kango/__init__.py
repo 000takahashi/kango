@@ -45,6 +45,9 @@ PRESSURE = (
     ("ご本人確認", "本人確認を名目に入力させる"), ("異常なログイン", "不正ログインで不安をあおる"),
 )
 _URL = re.compile(r"https?://[^\s「」<>\"'）)]+", re.I)
+# 電話番号＝0（または +81）で始まり、区切り（空白・かっこ・ハイフン類＝数字の間に3文字まで）を除いて10〜11桁（+81 の時は9〜10桁）。
+# 前後に数字が続くもの（注文番号など）は数えない。番号が本物かは確かめられない＝黄まで。
+_PHONE = re.compile(r"(?<![0-9])(?:\+81[ ()\-‐−–ー]{0,3}|0)[1-9](?:[ ()\-‐−–ー]{0,3}[0-9]){8,9}(?![0-9])")
 # 見た目が似た文字（amaz0n・rakuten → rakut3n 等）を戻してから似せた住所を探す
 _LOOKALIKE = str.maketrans({"0": "o", "1": "l", "3": "e", "5": "s", "4": "a"})
 
@@ -127,6 +130,12 @@ def judge(text: str, ledger: Iterable[str], brands: Optional[List[dict]] = None)
                 say("mimic", f"リンク先「{h}」は「{look['name']}」に似せた住所ですが、公式の住所ではありません。", 2)
             else:
                 say("unknown_domain", f"リンク先「{h}」は、登録された公式の住所ではありません。", 1)
+
+    # リンクの中の数字は数えない（住所はリンクとして照合済み）
+    plain = _URL.sub(" ", unicodedata.normalize("NFKC", text or ""))
+    if _PHONE.search(plain):
+        say("phone", "電話番号が書かれています。この番号が本物かは確かめられません。"
+            "電話する時は、公式サイトやカードの裏面など、自分で確かめた番号からかけてください。", 1)
 
     tricks = list(dict.fromkeys(r for w, r in PRESSURE if w in low))
     if tricks:
