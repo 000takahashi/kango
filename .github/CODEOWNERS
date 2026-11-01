@@ -9,3 +9,9 @@
 /Package.swift                          @000takahashi
 /python/pyproject.toml                  @000takahashi
 /.github/                               @000takahashi
+# 抜け道の届け先（SECURITY.md）やライセンスの表示を書き換えられると、報告が別の所へ行ったり、条件が変わったりする。
+/SECURITY.md                            @000takahashi
+/LICENSE                                @000takahashi
+/NOTICE                                 @000takahashi
+/python/LICENSE                         @000takahashi
+/python/NOTICE                          @000takahashi

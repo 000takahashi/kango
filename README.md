@@ -58,7 +58,7 @@ python -m kango --brands   # 台帳に入れられる会社の一覧
 Xcode の「File → Add Package Dependencies…」で `https://github.com/mamorune-com/kango` を入れるか、`Package.swift` の dependencies に次の1行を足します。
 
 ```swift
-.package(url: "https://github.com/mamorune-com/kango", from: "0.1.0")
+.package(url: "https://github.com/mamorune-com/kango", from: "0.2.0")
 ```
 
 使う側では、
@@ -69,6 +69,8 @@ import Kango
 let v = Judge.judge(text: message, ledger: ["rakuten", "docomo"])
 v.level   // .green / .amber / .red
 ```
+
+版を上げると、同じ文面でも答えが変わることがあります。版ごとの変更は [CHANGELOG.md](CHANGELOG.md) にあります。
 
 ### AI エージェントに組み込む
 
@@ -82,7 +84,7 @@ Python 版と Swift 版は、同じ規則で動きます。文面と返すべき
 
 ## もっと詳しく（参考書）
 
-[docs/](docs/README.md) に、[設計の考え方](docs/design.md)・[守れる範囲](docs/threat-model.md)（手口ごとの勘合の答え）・[組み込み方](docs/integration.md)（アプリ・サーバー・LINE ボット・AI エージェント）・[会社と規則の足し方](docs/extending.md)・[用語集](docs/glossary.md) をまとめています。守れる範囲の表と組み込みの例は、CI が毎回動かして確かめています。
+[docs/](docs/README.md) に、[設計の考え方](docs/design.md)・[守れる範囲](docs/threat-model.md)（手口ごとの勘合の答え）・[組み込み方](docs/integration.md)（アプリ・サーバー・LINE ボット・AI エージェント）・[会社と規則の足し方](docs/extending.md)・[用語集](docs/glossary.md)・[商用で使う](docs/commercial-use.md) をまとめています。守れる範囲の表と組み込みの例は、CI が毎回動かして確かめています。
 
 ## 考え方の出どころ
 
@@ -122,9 +124,13 @@ Python 版と Swift 版は、同じ規則で動きます。文面と返すべき
 
 勘合の公式の配布元は、このリポジトリ（github.com/mamorune-com/kango）だけです。「勘合で安全と判定済み」などとうたう別のアプリやサイトは、提供元と関係がありません。
 
+## 抜け道を見つけた時
+
+偽物の連絡が青になる抜け道を見つけた時は、公開の Issue には書かず、[SECURITY.md](SECURITY.md) の方法で、非公開でお知らせください。
+
 ## ライセンス
 
-Apache License 2.0（[LICENSE](LICENSE)）。
+Apache License 2.0（[LICENSE](LICENSE)）。会社のアプリやサービスに組み込んで、有料で提供しても構いません。配る時は、ライセンスの写しと [NOTICE](NOTICE) の表示を一緒に渡してください。くわしくは [商用で使う](docs/commercial-use.md) をご覧ください。
 
 提供：株式会社MAMORUNE
 
@@ -132,7 +138,7 @@ Apache License 2.0（[LICENSE](LICENSE)）。
 
 ## English (summary)
 
-**kango** is a deterministic phishing check for Japanese messages. It verifies two "tallies": whether the brand a message claims is in *your own contract ledger*, and whether every link sits on that brand's *official domain* (with lookalike detection). No AI, no network access, no storage. Green means "the tallies match", never "this is genuine". Python and Swift implementations share the same rules ([SPEC.md](SPEC.md)) and the same language-neutral test vectors ([conformance/cases.json](conformance/cases.json)), which a port to another language can use too. Try it from the command line with `python -m kango --ledger rakuten` (the message is read from stdin). Design notes, a threat model whose verdict table is executed by both test suites, and integration examples (in Japanese) are in [docs/](docs/README.md). Licensed under Apache-2.0.
+**kango** is a deterministic phishing check for Japanese messages. It verifies two "tallies": whether the brand a message claims is in *your own contract ledger*, and whether every link sits on that brand's *official domain* (with lookalike detection). No AI, no network access, no storage. Green means "the tallies match", never "this is genuine". Python and Swift implementations share the same rules ([SPEC.md](SPEC.md)) and the same language-neutral test vectors ([conformance/cases.json](conformance/cases.json)), which a port to another language can use too. Try it from the command line with `python -m kango --ledger rakuten` (the message is read from stdin). Design notes, a threat model whose verdict table is executed by both test suites, and integration examples (in Japanese) are in [docs/](docs/README.md). Licensed under Apache-2.0; commercial use is welcome (see [docs/commercial-use.md](docs/commercial-use.md) for a plain-language summary). Report bypasses privately as described in [SECURITY.md](SECURITY.md). Verdict-changing updates are listed in [CHANGELOG.md](CHANGELOG.md).
 
 **Not a new idea.** kango applies the principle behind password-manager autofill (only on the registered domain) and passkeys / WebAuthn (credentials bound to the domain) to incoming messages. Red and green are decided by things an attacker cannot fake (your own ledger, and domains they do not own), not by how convincing the text is, so making the text more natural with AI does not, by itself, turn red into green.
 

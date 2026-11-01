@@ -6,6 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 scripts/sync_brands.py && git diff --exit-code   # 同梱データが data/brands.csv と食い違っていないか
+      - run: cmp LICENSE python/LICENSE && cmp NOTICE python/NOTICE   # Python の部品に入れるライセンスの写しが、元と同じか
   python:
     runs-on: ubuntu-latest
     steps:

@@ -1,0 +1,43 @@
+name: 会社を足す・直す
+description: 会社の一覧（data/brands.csv）への追加や、公式の住所の修正の提案
+title: "[会社] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        会社の一覧は「青」を決める、いちばん大事な部分です。**その会社自身の公式ページで確かめられる住所だけ**を入れます（[CONTRIBUTING.md](https://github.com/mamorune-com/kango/blob/main/CONTRIBUTING.md)）。
+  - type: input
+    id: name
+    attributes:
+      label: 会社の名前
+    validations:
+      required: true
+  - type: textarea
+    id: domains
+    attributes:
+      label: 公式の住所（ドメイン）
+      description: 例：rakuten-card.co.jp。グループ会社の住所も、あればすべて書いてください。
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: その住所が書かれている、その会社自身のページの URL
+      description: フィッシングへの注意のお知らせ・よくある質問・送信元のメールアドレスの案内など。ニュース記事・まとめサイト・検索結果の広告は根拠にしません。
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 連絡が届く相手
+      options:
+        - 契約している人だけ（銀行・カード・携帯・通販など）
+        - 誰にでも（配送・郵便・役所など）
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: ほかに知っていること
+      description: その会社をかたる詐欺でよく使われる言葉や、偽の住所の例など（偽の住所は開かないでください）。

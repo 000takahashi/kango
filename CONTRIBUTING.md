@@ -23,3 +23,7 @@
 ## 判定の規則を足す・直す時
 
 [docs/extending.md](docs/extending.md) の手順に沿ってください。SPEC.md を先に直し、Python と Swift を同じように直して、共通の見本（[conformance/cases.json](conformance/cases.json)）に見本を足します。
+
+## 抜け道を見つけた時
+
+偽物の連絡が青になる抜け道は、公開の Issue や Pull Request には書かず、[SECURITY.md](SECURITY.md) の方法で、非公開でお知らせください。
