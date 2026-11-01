@@ -5,7 +5,7 @@ import XCTest
 /// 色と理由のコードは、ConformanceTests.swift が共通の見本（conformance/cases.json）で確かめている。
 final class JudgeTests: XCTestCase {
     func verdicts() throws -> [(text: String, verdict: Verdict)] {
-        let all = try ConformanceTests.load()
+        let all = try ConformanceTests.loadCases()
         return all.cases.map { c in (text: c.text, verdict: Judge.judge(text: c.text, ledger: Set(c.ledger ?? all.ledger))) }
     }
 

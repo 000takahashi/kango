@@ -22,7 +22,7 @@ final class ConformanceTests: XCTestCase {
 
     static let levels: [String: Verdict.Level] = ["green": .green, "amber": .amber, "red": .red]
 
-    static func load() throws -> Cases {
+    static func loadCases() throws -> Cases {
         // このファイル（swift/Tests/KangoTests/ConformanceTests.swift）から4つ上がリポジトリのいちばん上
         let root = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent()
@@ -32,7 +32,7 @@ final class ConformanceTests: XCTestCase {
     }
 
     func testEveryCase() throws {
-        let all = try Self.load()
+        let all = try Self.loadCases()
         XCTAssertGreaterThanOrEqual(all.cases.count, 40, "見本が読めていません")
         for c in all.cases {
             let label = "\(c.note)：\(c.text)"
