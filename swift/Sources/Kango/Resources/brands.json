@@ -1,0 +1,325 @@
+[
+ {
+  "id": "amazon",
+  "name": "Amazon",
+  "kind": "contract",
+  "words": [
+   "amazon",
+   "アマゾン"
+  ],
+  "domains": [
+   "amazon.co.jp",
+   "amazon.com",
+   "amazon.jp"
+  ],
+  "stems": [
+   "amazon"
+  ],
+  "checked": null
+ },
+ {
+  "id": "rakuten",
+  "name": "楽天",
+  "kind": "contract",
+  "words": [
+   "楽天",
+   "rakuten"
+  ],
+  "domains": [
+   "rakuten.co.jp",
+   "rakuten-card.co.jp",
+   "rakuten-bank.co.jp",
+   "rakuten.jp",
+   "rakuten-card.jp",
+   "rakuten-static.com",
+   "rakuten-wallet.co.jp",
+   "rakuten-insurance.co.jp"
+  ],
+  "stems": [
+   "rakuten"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "mercari",
+  "name": "メルカリ",
+  "kind": "contract",
+  "words": [
+   "メルカリ",
+   "mercari",
+   "メルペイ",
+   "merpay"
+  ],
+  "domains": [
+   "mercari.com",
+   "merpay.com",
+   "mercari-shops.com"
+  ],
+  "stems": [
+   "mercari"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "paypay",
+  "name": "PayPay",
+  "kind": "contract",
+  "words": [
+   "paypay",
+   "ペイペイ"
+  ],
+  "domains": [
+   "paypay.ne.jp",
+   "paypay.co.jp",
+   "paypay-corp.co.jp",
+   "paypay-business.jp"
+  ],
+  "stems": [
+   "paypay"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "yucho",
+  "name": "ゆうちょ銀行",
+  "kind": "contract",
+  "words": [
+   "ゆうちょ"
+  ],
+  "domains": [
+   "jp-bank.japanpost.jp"
+  ],
+  "stems": [
+   "yucho",
+   "jp-bank"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "smbccard",
+  "name": "三井住友カード",
+  "kind": "contract",
+  "words": [
+   "三井住友カード",
+   "vpass"
+  ],
+  "domains": [
+   "smbc-card.com",
+   "vpass.ne.jp"
+  ],
+  "stems": [
+   "smbc",
+   "vpass"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "smbc",
+  "name": "三井住友銀行",
+  "kind": "contract",
+  "words": [
+   "三井住友銀行"
+  ],
+  "domains": [
+   "smbc.co.jp"
+  ],
+  "stems": [
+   "smbc"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "mufg",
+  "name": "三菱UFJ銀行",
+  "kind": "contract",
+  "words": [
+   "三菱ufj"
+  ],
+  "domains": [
+   "bk.mufg.jp",
+   "mufg.jp"
+  ],
+  "stems": [
+   "mufg"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "jcb",
+  "name": "JCB",
+  "kind": "contract",
+  "words": [
+   "jcb"
+  ],
+  "domains": [
+   "jcb.co.jp",
+   "global.jcb"
+  ],
+  "stems": [
+   "jcb"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "aeon",
+  "name": "イオンカード",
+  "kind": "contract",
+  "words": [
+   "イオンカード",
+   "イオン銀行"
+  ],
+  "domains": [
+   "aeon.co.jp",
+   "aeonbank.co.jp"
+  ],
+  "stems": [
+   "aeon"
+  ],
+  "checked": null
+ },
+ {
+  "id": "docomo",
+  "name": "ドコモ",
+  "kind": "contract",
+  "words": [
+   "ドコモ",
+   "docomo"
+  ],
+  "domains": [
+   "docomo.ne.jp",
+   "nttdocomo.co.jp"
+  ],
+  "stems": [
+   "docomo"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "au",
+  "name": "au",
+  "kind": "contract",
+  "words": [
+   "kddi",
+   "auじぶん",
+   "au id",
+   "au pay"
+  ],
+  "domains": [
+   "au.com",
+   "kddi.com",
+   "auone.jp"
+  ],
+  "stems": [
+   "kddi"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "softbank",
+  "name": "ソフトバンク",
+  "kind": "contract",
+  "words": [
+   "ソフトバンク",
+   "softbank",
+   "ワイモバイル",
+   "y!mobile",
+   "linemo"
+  ],
+  "domains": [
+   "softbank.jp",
+   "ymobile.jp",
+   "linemo.jp"
+  ],
+  "stems": [
+   "softbank"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "apple",
+  "name": "Apple",
+  "kind": "contract",
+  "words": [
+   "apple",
+   "アップル",
+   "icloud"
+  ],
+  "domains": [
+   "apple.com",
+   "icloud.com"
+  ],
+  "stems": [
+   "apple",
+   "icloud"
+  ],
+  "checked": null
+ },
+ {
+  "id": "yamato",
+  "name": "ヤマト運輸",
+  "kind": "everyone",
+  "words": [
+   "ヤマト",
+   "クロネコ"
+  ],
+  "domains": [
+   "kuronekoyamato.co.jp"
+  ],
+  "stems": [
+   "kuroneko",
+   "yamato"
+  ],
+  "checked": null
+ },
+ {
+  "id": "sagawa",
+  "name": "佐川急便",
+  "kind": "everyone",
+  "words": [
+   "佐川"
+  ],
+  "domains": [
+   "sagawa-exp.co.jp"
+  ],
+  "stems": [
+   "sagawa"
+  ],
+  "checked": null
+ },
+ {
+  "id": "jppost",
+  "name": "日本郵便",
+  "kind": "everyone",
+  "words": [
+   "日本郵便",
+   "郵便局"
+  ],
+  "domains": [
+   "japanpost.jp"
+  ],
+  "stems": [
+   "japanpost",
+   "japan-post"
+  ],
+  "checked": "2026-10-31"
+ },
+ {
+  "id": "nta",
+  "name": "国税庁",
+  "kind": "everyone",
+  "words": [
+   "国税庁",
+   "e-tax",
+   "税務署"
+  ],
+  "domains": [
+   "nta.go.jp"
+  ],
+  "stems": [
+   "e-tax",
+   "etax",
+   "nta-"
+  ],
+  "checked": "2026-10-31"
+ }
+]
