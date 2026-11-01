@@ -37,3 +37,5 @@ jobs:
         run: |
           pip install "git+https://github.com/${GITHUB_REPOSITORY}@${GITHUB_REF_NAME}#subdirectory=python"
           python -c "import kango, sys; r = kango.judge('【楽天カード】ご請求額が確定しました https://www.rakuten-card.co.jp/', ledger=['rakuten']); print(r['level']); sys.exit(r['level'] != 'green')"
+          # コマンド（python -m kango）も、入れた部品でそのまま動くか
+          echo "【楽天カード】ご請求額が確定しました https://www.rakuten-card.co.jp/" | python -m kango --ledger rakuten --json | python -c "import json, sys; sys.exit(json.load(sys.stdin)['level'] != 'green')"

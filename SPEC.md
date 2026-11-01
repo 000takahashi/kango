@@ -35,6 +35,26 @@
 - `contract`：契約している人だけに連絡が来る会社（銀行・カード・通信・通販など）。台帳と照合します。
 - `everyone`：誰にでも連絡が来うる会社・機関（配送・郵便・国税庁）。台帳を見ず、リンク先だけで判定します。リンクが無ければ照らし合わせるものが無いので、黄（`nothing_to_check`）です。
 
+## 並び順
+
+同じ入力には、同じ並びで答えます（別の言語に移した実装でも同じ答えになるように）。
+
+- 名乗った会社（`claimed`）：`data/brands.csv` の行の順。
+- リンク先（`hosts`）：`https://` のあるリンクを文面に出てきた順に並べ、そのあとに `https://` の無いリンクを出てきた順に並べます。同じ住所は最初の1回だけ。
+- 理由（`reasons`）：
+  1. 会社を名乗っていなければ `no_claim`。名乗っていれば、名乗った会社ごとに `not_in_ledger` か `in_ledger`（`everyone` の会社は台帳を見ないので、ここには出ません）
+  2. `disguised`（見せかけのあるリンクの、本当の行き先ごと。同じ住所は1回だけ）
+  3. リンク先ごとに1つ。次の順に見て、最初に当てはまったもの：
+     - 短縮URLなら `shortener`
+     - 国際化ドメイン（`xn--`）か、ふつうの住所に使わない文字があれば `idn`
+     - 会社を名乗っていて、名乗ったどの会社の公式の住所でもなければ、名乗った会社の名前（`stems`）を含む時は `mimic`、含まない時は `off_domain`
+     - どれかの会社の公式の住所なら `official`
+     - どれかの会社の名前（`stems`）を含めば `mimic`
+     - どれでもなければ `unknown_domain`
+  4. `phone`（1つだけ）
+  5. `pressure`（1つだけ。当てはまった言いまわしをまとめて書く）
+  6. `nothing_to_check`（ほかの理由がひとつも無い時だけ）
+
 ## 返す文言
 
 - 青：「割符が合いました」＋「念のため、公式アプリやいつものブックマークから開いて確かめてください」
@@ -44,4 +64,4 @@
 
 ## 実装を変える時
 
-Python（`python/kango/__init__.py`）と Swift（`swift/Sources/Kango/Judge.swift`）は同じ規則に保ちます。片方を変えたら、両方のテスト（`python/tests/test_judge.py`・`swift/Tests/KangoTests/JudgeTests.swift`）に同じ見本を足してください。
+Python（`python/kango/__init__.py`）と Swift（`swift/Sources/Kango/Judge.swift`）は同じ規則に保ちます。規則を変えたら、共通の見本（[conformance/cases.json](conformance/cases.json)）に見本を足してください。Python と Swift のテストが、どちらもこの見本を読み込んで確かめます。手順は [docs/extending.md](docs/extending.md) にあります。

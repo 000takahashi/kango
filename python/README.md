@@ -13,4 +13,11 @@ r = judge("【楽天カード】ご請求額が確定しました https://www.ra
 r["level"]  # "green" / "amber" / "red"
 ```
 
+コマンドでも試せます。
+
+```sh
+echo "【楽天カード】ご請求額が確定しました https://www.rakuten-card.co.jp/" | python -m kango --ledger rakuten
+python -m kango --help
+```
+
 PyPI にある `kango` は、この部品とは関係のない別のものです。`pip install kango` では入りません。

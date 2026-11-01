@@ -4,6 +4,19 @@
 
 ここに載せた Python の例は [examples/python/](../examples/python/) にそのまま動く形で置いてあり、CI が毎回動かして確かめています。
 
+## まず試す
+
+Python 版を入れると、コマンドで試せます。
+
+```sh
+echo "【楽天カード】ご請求額が確定しました https://www.rakuten-card.co.jp/" | python -m kango --ledger rakuten
+python -m kango --brands                                  # 台帳に入れられる会社の一覧（id・名前・種類・確かめた日）
+python -m kango --ledger rakuten,docomo --json < message.txt   # 答えを JSON で
+```
+
+- 届いた本物の文面は、`python -m kango --ledger rakuten` と打ってから貼り付け、最後に Ctrl-D（Windows は Ctrl-Z のあと Enter）を押すか、ファイルから渡してください。引数や `echo` で文面を渡すと、シェルの履歴に文面が残ります。
+- 答えの色によらず、終了コードは 0 です。シェルで色を見て分けたい時は、`--json` の `level` を読んでください。
+
 ## 結果の見せ方
 
 判定の結果には、見せ方の作法があります。どの組み込み方でも守ってください。

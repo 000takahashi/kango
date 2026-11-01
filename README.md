@@ -40,6 +40,19 @@ r["level"]    # "green" / "amber" / "red"
 r["reasons"]  # [{"code": "in_ledger", "text": "..."}, ...]
 ```
 
+コマンドでも試せます。
+
+```sh
+echo "【楽天カード】ご請求額が確定しました https://www.rakuten-card.co.jp/" | python -m kango --ledger rakuten
+# 青：割符が合いました
+# ・「楽天」はあなたの割符にあります。（in_ledger）
+# ・リンク先「www.rakuten-card.co.jp」は「楽天」の公式の住所と一致しました。（official）
+
+python -m kango --brands   # 台帳に入れられる会社の一覧
+```
+
+届いた本物の文面を試す時は、`python -m kango --ledger rakuten` と打ってから文面を貼り付け、最後に Ctrl-D を押してください。引数や `echo` で文面を渡すと、シェルの履歴に文面が残ります。
+
 ### Swift（iOS 17 / macOS 13 以降）
 
 Xcode の「File → Add Package Dependencies…」で `https://github.com/mamorune-com/kango` を入れるか、`Package.swift` の dependencies に次の1行を足します。
@@ -64,6 +77,8 @@ v.level   // .green / .amber / .red
 ## 判定の規則
 
 [SPEC.md](SPEC.md) にすべて書いてあります。理由のコード（`not_in_ledger`・`mimic` など）も一覧にしています。
+
+Python 版と Swift 版は、同じ規則で動きます。文面と返すべき答えの組（[共通の見本](conformance/README.md)）を両方のテストが読み込み、同じ答えになることを毎回確かめています。勘合を別の言語に移す時も、この見本で確かめられます。
 
 ## もっと詳しく（参考書）
 
@@ -117,7 +132,7 @@ Apache License 2.0（[LICENSE](LICENSE)）。
 
 ## English (summary)
 
-**kango** is a deterministic phishing check for Japanese messages. It verifies two "tallies": whether the brand a message claims is in *your own contract ledger*, and whether every link sits on that brand's *official domain* (with lookalike detection). No AI, no network access, no storage. Green means "the tallies match", never "this is genuine". Python and Swift implementations share the same rules ([SPEC.md](SPEC.md)) and test cases. Design notes, a threat model whose verdict table is executed by both test suites, and integration examples (in Japanese) are in [docs/](docs/README.md). Licensed under Apache-2.0.
+**kango** is a deterministic phishing check for Japanese messages. It verifies two "tallies": whether the brand a message claims is in *your own contract ledger*, and whether every link sits on that brand's *official domain* (with lookalike detection). No AI, no network access, no storage. Green means "the tallies match", never "this is genuine". Python and Swift implementations share the same rules ([SPEC.md](SPEC.md)) and the same language-neutral test vectors ([conformance/cases.json](conformance/cases.json)), which a port to another language can use too. Try it from the command line with `python -m kango --ledger rakuten` (the message is read from stdin). Design notes, a threat model whose verdict table is executed by both test suites, and integration examples (in Japanese) are in [docs/](docs/README.md). Licensed under Apache-2.0.
 
 **Not a new idea.** kango applies the principle behind password-manager autofill (only on the registered domain) and passkeys / WebAuthn (credentials bound to the domain) to incoming messages. Red and green are decided by things an attacker cannot fake (your own ledger, and domains they do not own), not by how convincing the text is, so making the text more natural with AI does not, by itself, turn red into green.
 

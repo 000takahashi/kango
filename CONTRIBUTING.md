@@ -14,7 +14,7 @@
 | `stems` | 偽の住所に紛れ込みやすい名前の断片（似せた住所の検出に使う） |
 | `checked` | 公式ページで確かめた日付（空欄＝未確認） |
 
-**グループ会社の住所の抜けに注意してください。** 例えば三井住友カードの `vpass.ne.jp` が抜けると、本物の連絡を「似せた住所」として赤にしてしまいます。追加したら、本物の住所が青になる見本をテストに1行足してください。
+**グループ会社の住所の抜けに注意してください。** 例えば三井住友カードの `vpass.ne.jp` が抜けると、本物の連絡を「似せた住所」として赤にしてしまいます。追加したら、本物の住所が青になる見本を、共通の見本（[conformance/cases.json](conformance/cases.json)）に1件足してください。
 
 ## 審査について
 
@@ -22,4 +22,4 @@
 
 ## 判定の規則を足す・直す時
 
-[docs/extending.md](docs/extending.md) の手順に沿ってください。SPEC.md を先に直し、Python と Swift を同じように直して、両方のテストに同じ見本を足します。
+[docs/extending.md](docs/extending.md) の手順に沿ってください。SPEC.md を先に直し、Python と Swift を同じように直して、共通の見本（[conformance/cases.json](conformance/cases.json)）に見本を足します。
