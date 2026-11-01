@@ -17,4 +17,4 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
-      - run: cd swift && swift test
+      - run: swift test   # 設計図（Package.swift）はリポジトリのいちばん上にある
