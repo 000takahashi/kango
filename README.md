@@ -36,7 +36,13 @@ r["reasons"]  # [{"code": "in_ledger", "text": "..."}, ...]
 
 ### Swift（iOS 17 / macOS 13 以降）
 
-Swift Package Manager で `swift/` を追加し、
+Xcode の「File → Add Package Dependencies…」で `https://github.com/mamorune-com/kango` を入れるか、`Package.swift` の dependencies に次の1行を足します。
+
+```swift
+.package(url: "https://github.com/mamorune-com/kango", from: "0.1.0")
+```
+
+使う側では、
 
 ```swift
 import Kango

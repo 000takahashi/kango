@@ -5,3 +5,7 @@
 /swift/Sources/Kango/Resources/         @000takahashi
 /python/kango/__init__.py               @000takahashi
 /swift/Sources/Kango/Judge.swift        @000takahashi
+# 設計図に外の部品を足されると、勘合を使う全員にその部品が届く＝設計図と CI も管理者の承認を要る。
+/Package.swift                          @000takahashi
+/python/pyproject.toml                  @000takahashi
+/.github/                               @000takahashi
