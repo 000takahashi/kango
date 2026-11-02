@@ -90,6 +90,8 @@ LINE の公式アカウントに届いた文面を判定して返信する時は
 
 利用者の代わりにメールや SMS を読み、リンクを開いたり入力したりする AI ほど、フィッシングに騙される危険があります。リンクを開く前に勘合を通し、青の時だけ通す関所の例が [examples/python/agent_gate.py](../examples/python/agent_gate.py) です。
 
+AI に渡す文書そのもの（.md など）に隠れた命令が混ざっていないかを調べる部品は、別にあります（[勘合の関所](sekisho.md)）。
+
 ```python
 from kango import host_of, judge
 
