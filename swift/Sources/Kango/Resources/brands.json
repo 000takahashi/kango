@@ -71,6 +71,7 @@
   "domains": [
    "paypay.ne.jp",
    "paypay.co.jp",
+   "paypay-card.co.jp",
    "paypay-corp.co.jp",
    "paypay-business.jp"
   ],
@@ -183,7 +184,8 @@
   "kind": "contract",
   "words": [
    "ドコモ",
-   "docomo"
+   "docomo",
+   "dカード"
   ],
   "domains": [
    "docomo.ne.jp",
@@ -253,6 +255,129 @@
    "icloud"
   ],
   "checked": null
+ },
+ {
+  "id": "saison",
+  "name": "セゾンカード",
+  "kind": "contract",
+  "words": [
+   "セゾン",
+   "saison card",
+   "saisoncard",
+   "セゾンポータル",
+   "saison portal"
+  ],
+  "domains": [
+   "saisoncard.co.jp",
+   "saisonportal.jp",
+   "saison.link",
+   "saisonid.com",
+   "a-q-f.com",
+   "pointunyou.jp"
+  ],
+  "stems": [
+   "saisoncard",
+   "saisonportal",
+   "saisonid"
+  ],
+  "checked": "2026-11-02"
+ },
+ {
+  "id": "epos",
+  "name": "エポスカード",
+  "kind": "contract",
+  "words": [
+   "エポス",
+   "eposcard",
+   "epos card"
+  ],
+  "domains": [
+   "eposcard.co.jp"
+  ],
+  "stems": [
+   "eposcard"
+  ],
+  "checked": "2026-11-02"
+ },
+ {
+  "id": "amex",
+  "name": "アメリカン・エキスプレス",
+  "kind": "contract",
+  "words": [
+   "アメックス",
+   "アメリカン・エキスプレス",
+   "アメリカンエキスプレス",
+   "american express",
+   "americanexpress",
+   "amex"
+  ],
+  "domains": [
+   "americanexpress.com",
+   "aexp-static.com",
+   "amex"
+  ],
+  "stems": [
+   "amex",
+   "americanexpress"
+  ],
+  "checked": "2026-11-02"
+ },
+ {
+  "id": "view",
+  "name": "ビューカード",
+  "kind": "contract",
+  "words": [
+   "ビューカード",
+   "viewカード",
+   "viewcard",
+   "view card",
+   "viewsnet",
+   "view's net"
+  ],
+  "domains": [
+   "jreast.co.jp",
+   "viewsnet.jp"
+  ],
+  "stems": [
+   "viewcard",
+   "viewsnet"
+  ],
+  "checked": "2026-11-02"
+ },
+ {
+  "id": "orico",
+  "name": "オリコ",
+  "kind": "contract",
+  "words": [
+   "オリコ",
+   "orico"
+  ],
+  "domains": [
+   "orico.co.jp",
+   "oricomall.com",
+   "orico-web.jp"
+  ],
+  "stems": [
+   "orico"
+  ],
+  "checked": "2026-11-02"
+ },
+ {
+  "id": "lifecard",
+  "name": "ライフカード",
+  "kind": "contract",
+  "words": [
+   "ライフカード",
+   "lifecard",
+   "life card"
+  ],
+  "domains": [
+   "lifecard.co.jp"
+  ],
+  "stems": [
+   "lifecard"
+  ],
+  "checked": "2026-11-02"
  },
  {
   "id": "yamato",
