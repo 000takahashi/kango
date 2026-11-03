@@ -1,0 +1,148 @@
+{
+ "about": "行の印（marks）の共通の見本。説明は conformance/README.md",
+ "ledger": [
+  "amazon",
+  "rakuten",
+  "docomo",
+  "yucho"
+ ],
+ "cases": [
+  {
+   "note": "似せたリンクの行は赤、急かす言いまわしの行は黄。会社名だけの行（台帳にある）には印を付けない",
+   "lines": [
+    "【Amazon】",
+    "24時間以内にお支払い情報を更新しないと停止",
+    "https://amazon-co-jp.account-verify.top/login",
+    "Amazon カスタマーサービス"
+   ],
+   "marks": [
+    {
+     "line": 1,
+     "level": "amber",
+     "codes": [
+      "pressure"
+     ]
+    },
+    {
+     "line": 2,
+     "level": "red",
+     "codes": [
+      "mimic"
+     ]
+    }
+   ]
+  },
+  {
+   "note": "台帳にない会社の名前の行に赤。公式の住所の行（青）には印を付けない",
+   "lines": [
+    "【三菱UFJ銀行】",
+    "口座が凍結されています",
+    "https://www.bk.mufg.jp/"
+   ],
+   "marks": [
+    {
+     "line": 0,
+     "level": "red",
+     "codes": [
+      "not_in_ledger"
+     ]
+    },
+    {
+     "line": 1,
+     "level": "amber",
+     "codes": [
+      "pressure"
+     ]
+    }
+   ]
+  },
+  {
+   "note": "全部が青なら、印は1つも無い",
+   "lines": [
+    "【楽天カード】ご請求額が確定しました",
+    "https://www.rakuten-card.co.jp/e-navi/"
+   ],
+   "marks": []
+  },
+  {
+   "note": "電話番号の行に黄",
+   "lines": [
+    "【ドコモ】ご利用料金の確認",
+    "お問い合わせ 0120-123-456"
+   ],
+   "marks": [
+    {
+     "line": 1,
+     "level": "amber",
+     "codes": [
+      "phone"
+     ]
+    }
+   ]
+  },
+  {
+   "note": "見せかけのリンクは、ごまかしと行き先の両方の理由が同じ行に付く。短縮URLは別の行に黄",
+   "lines": [
+    "お荷物のお届けについて https://www.yamato-transport.co.jp@evil.example/track",
+    "詳しくは bit.ly/abc"
+   ],
+   "marks": [
+    {
+     "line": 0,
+     "level": "red",
+     "codes": [
+      "disguised",
+      "unknown_domain"
+     ]
+    },
+    {
+     "line": 1,
+     "level": "amber",
+     "codes": [
+      "shortener"
+     ]
+    }
+   ]
+  },
+  {
+   "note": "乗っ取りの頼みごとの行に黄",
+   "lines": [
+    "【楽天カード】サポート窓口です。",
+    "SMSに届いた6桁の番号を教えてください"
+   ],
+   "marks": [
+    {
+     "line": 1,
+     "level": "amber",
+     "codes": [
+      "takeover"
+     ]
+    }
+   ]
+  },
+  {
+   "note": "行をまたいで切れた言葉は、判定でも印でも数えない（行は改行でつないで読む）",
+   "lines": [
+    "【楽天カード】ご利用カードの停",
+    "止について https://www.rakuten-card.co.jp/"
+   ],
+   "marks": []
+  },
+  {
+   "note": "同じ行に赤と黄があれば、その行は赤",
+   "lines": [
+    "【Amazon】本日中にご確認ください https://amazon.account-check.example/"
+   ],
+   "marks": [
+    {
+     "line": 0,
+     "level": "red",
+     "codes": [
+      "mimic",
+      "pressure"
+     ]
+    }
+   ]
+  }
+ ]
+}

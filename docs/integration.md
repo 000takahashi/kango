@@ -54,6 +54,22 @@ for h in v.helplines { print("\(h.label)：\(h.tel)") }
 
 返信の文章にする例は [examples/python/reply_text.py](../examples/python/reply_text.py) です。
 
+### どの行が引っかかったかを見せる
+
+画面写真から読んだ文字のように、文面が行に分かれている時は、`marks` で「どの行が」引っかかったかも分かります。写真の上に枠を付けると、利用者は次に似た連絡が来た時に、自分でも気づけるようになります。
+
+```python
+from kango import judge, marks
+
+lines = ["【Amazon】", "24時間以内にお支払い情報を更新しないと停止", "https://amazon-co-jp.account-verify.top/login"]
+judge("\n".join(lines), ledger=["amazon"])["level"]   # "red"
+marks(lines, ledger=["amazon"])
+# [{"line": 1, "level": "amber", "codes": ["pressure"], "labels": ["詐欺によくある言いまわし"]},
+#  {"line": 2, "level": "red", "codes": ["mimic"], "labels": ["会社の名前に似せたリンク"]}]
+```
+
+印は赤と黄の行だけに付きます。**印の無い行を「安全」と見せないでください。** 規則は [SPEC.md](../SPEC.md) の「行に印を付ける」です。
+
 ## 台帳の作り方
 
 台帳は、利用者が取引している会社の `id` の一覧です（例：`["rakuten", "docomo"]`）。

@@ -40,6 +40,10 @@
 - 実在の人の名前・住所・電話番号は入れません。番号は `0120-123-456` のような明らかな例に、攻撃する側の住所は `example`（`evil.example` など、例のために取っておかれた住所）にします。
 - 会社を足した時は、その会社の本物の住所が青になる見本を1件足します（台帳はその会社だけ）。
 
+## 行の印の見本（marks.json）
+
+[marks.json](marks.json) は、行の印（SPEC.md の「行に印を付ける」）の見本です。見本ごとに `lines`（行に分けた文面）と、返すべき `marks`（印のある行の `line`・`level`・`codes`）を書いています。`ledger` の扱いは cases.json と同じです。`labels` の言い回しは比べません。Python は `python/tests/test_marks.py`、Swift は `swift/Tests/KangoTests/MarksTests.swift` が、すべての見本を動かします。
+
 ---
 
 ## English

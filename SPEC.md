@@ -64,6 +64,23 @@
 - 赤：「割符が合いません。偽物の疑いが強いです」
 - 青以外では、相談先（#9110・188）を添えます。
 
+## 行に印を付ける（marks）
+
+画面写真から読んだ1行ずつのように、文面を行に分けて渡すと、「どの行が」引っかかったかを返します（Python は `marks(lines, ledger)`、Swift は `Judge.marks(lines:ledger:)`）。画面写真の上に枠を付けたり、文面に印を付けたりするためのものです。
+
+- 判定は、行を改行でつないだ文面で行います。答え（色・理由）は `judge` と同じで、印のために変わることはありません。
+- 印を付けるのは赤と黄の理由だけです。青の理由（`in_ledger`・`official`）には付けません。「印の無い所は安全」と読ませないためです。
+- 理由ごとに、次の行に印を付けます。行の中で照らし合わせる時も、下ごしらえ（NFKC・小文字）は同じです。
+    - `not_in_ledger`：その会社の `words` が書かれた行
+    - `disguised`・`shortener`・`idn`・`mimic`・`off_domain`・`unknown_domain`：その理由のリンク先（住所）が、行の中のリンクの住所に含まれる行
+    - `phone`：リンクを除いた行の中に電話番号がある行
+    - `pressure`：言いまわしのどれかが書かれた行
+    - `takeover`：頼みごとの型のどれかに当てはまる行
+    - `no_claim`・`nothing_to_check`：どの行にも付けません（文面全体についての理由）
+- 行をまたいで切れた言葉やリンクは、どの行にも印が付きません（判定でも、改行で切れた言葉は数えません）。
+- 返すのは、印のある行だけを行の順に並べたものです。1つの行は `line`（0から数えた行の番号）・`level`（その行の理由のいちばん重い色）・`codes`（その行に当たる理由のコード。理由の並び順のまま、同じコードは1回）・`labels`（コードごとの短い説明）を持ちます。
+- `labels` の言い回しは、製品や言語ごとに変えてかまいません。共通の見本（[conformance/marks.json](conformance/marks.json)）では、`line`・`level`・`codes` だけを比べます。
+
 ## 実装を変える時
 
 Python（`python/kango/__init__.py`）と Swift（`swift/Sources/Kango/Judge.swift`）は同じ規則に保ちます。規則を変えたら、共通の見本（[conformance/cases.json](conformance/cases.json)）に見本を足してください。Python と Swift のテストが、どちらもこの見本を読み込んで確かめます。手順は [docs/extending.md](docs/extending.md) にあります。

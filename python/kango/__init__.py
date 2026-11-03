@@ -15,7 +15,7 @@ import unicodedata
 from pathlib import Path
 from typing import Iterable, List, Optional
 
-__all__ = ["judge", "load_brands", "BRANDS", "host_of", "is_official", "mimicked_brand"]
+__all__ = ["judge", "marks", "load_brands", "BRANDS", "host_of", "is_official", "mimicked_brand"]
 
 
 def _split(v: str) -> List[str]:
@@ -135,6 +135,11 @@ def mimicked_brand(host: str, brands: Iterable[dict]) -> Optional[dict]:
 
 def judge(text: str, ledger: Iterable[str], brands: Optional[List[dict]] = None) -> dict:
     """勘合の判定（決定的・純粋）。level は green / amber / red。"""
+    return _judge(text, ledger, brands)[0]
+
+
+def _judge(text: str, ledger: Iterable[str], brands: Optional[List[dict]] = None):
+    """判定と、理由ごとの「何についての理由か」（行に印を付ける marks が使う。judge の答えには出さない）。"""
     brands = BRANDS if brands is None else brands
     owned = set(ledger or ())
     low = _norm(text)
@@ -142,48 +147,50 @@ def judge(text: str, ledger: Iterable[str], brands: Optional[List[dict]] = None)
     urls, bare, plain = _scan(text)
     hosts = [h for h in (host_of(u) for u in urls) if h] + bare
     reasons: List[dict] = []
+    detail: List[tuple] = []   # (code, level, target)
     rank = 0   # 0 green / 1 amber / 2 red
 
-    def say(code: str, msg: str, level: int) -> None:
+    def say(code: str, msg: str, level: int, target: Optional[str] = None) -> None:
         nonlocal rank
         reasons.append({"code": code, "text": msg})
+        detail.append((code, level, target))
         rank = max(rank, level)
 
     if not claimed:
         say("no_claim", "どの会社を名乗っているか読み取れませんでした。", 1)
     for b in claimed:
         if b["kind"] == "contract" and b["id"] not in owned:
-            say("not_in_ledger", f"「{b['name']}」を名乗っていますが、あなたの割符（契約している会社）にありません。", 2)
+            say("not_in_ledger", f"「{b['name']}」を名乗っていますが、あなたの割符（契約している会社）にありません。", 2, b["id"])
         elif b["kind"] == "contract":
-            say("in_ledger", f"「{b['name']}」はあなたの割符にあります。", 0)
+            say("in_ledger", f"「{b['name']}」はあなたの割符にあります。", 0, b["id"])
 
     # 「@」や「\」で本当の行き先をごまかす書き方（https://本物の住所@偽の住所/・https://偽の住所\@本物の住所/）
     tricked = [host_of(u) for u in urls if any(c in _SHOWN.match(u).group(1) for c in "@\\")]
     for h in dict.fromkeys(h for h in tricked if h):
-        say("disguised", f"リンクの住所に「@」や「\\」を使った見せかけがあります。本当の行き先は「{h}」です。", 2)
+        say("disguised", f"リンクの住所に「@」や「\\」を使った見せかけがあります。本当の行き先は「{h}」です。", 2, h)
 
     for h in dict.fromkeys(hosts):   # 同じ住所は1回だけ
         if h in SHORTENERS:
-            say("shortener", f"リンク（{h}）は短縮URLで、行き先が見えません。", 1)
+            say("shortener", f"リンク（{h}）は短縮URLで、行き先が見えません。", 1, h)
             continue
         if h.startswith("xn--") or ".xn--" in h or not _HOST_OK.fullmatch(h):
-            say("idn", f"リンク先「{h}」は、ふつうの住所には使わない文字を含んでいます。見た目を似せる手口に使われます。", 2)
+            say("idn", f"リンク先「{h}」は、ふつうの住所には使わない文字を含んでいます。見た目を似せる手口に使われます。", 2, h)
             continue
         owner = next((b for b in brands if is_official(h, b)), None)
         if claimed and not any(is_official(h, b) for b in claimed):
             look = mimicked_brand(h, claimed)
             if look:
-                say("mimic", f"リンク先「{h}」は「{look['name']}」に似せた住所ですが、公式の住所ではありません。", 2)
+                say("mimic", f"リンク先「{h}」は「{look['name']}」に似せた住所ですが、公式の住所ではありません。", 2, h)
             else:
-                say("off_domain", f"リンク先「{h}」は、名乗った会社の公式の住所ではありません。", 2)
+                say("off_domain", f"リンク先「{h}」は、名乗った会社の公式の住所ではありません。", 2, h)
         elif owner:
-            say("official", f"リンク先「{h}」は「{owner['name']}」の公式の住所と一致しました。", 0)
+            say("official", f"リンク先「{h}」は「{owner['name']}」の公式の住所と一致しました。", 0, h)
         else:
             look = mimicked_brand(h, brands)
             if look:
-                say("mimic", f"リンク先「{h}」は「{look['name']}」に似せた住所ですが、公式の住所ではありません。", 2)
+                say("mimic", f"リンク先「{h}」は「{look['name']}」に似せた住所ですが、公式の住所ではありません。", 2, h)
             else:
-                say("unknown_domain", f"リンク先「{h}」は、登録された公式の住所ではありません。", 1)
+                say("unknown_domain", f"リンク先「{h}」は、登録された公式の住所ではありません。", 1, h)
 
     # リンク（https:// の無いものも）の中の数字は数えない（住所はリンクとして照合済み）
     if _PHONE.search(plain):
@@ -205,6 +212,63 @@ def judge(text: str, ledger: Iterable[str], brands: Optional[List[dict]] = None)
         say("nothing_to_check", "割符（契約している会社）や公式の住所へのリンクなど、照らし合わせられるものがありませんでした。", 1)
 
     level = ("green", "amber", "red")[rank]
-    return {"level": level, "head": HEADS[level], "reasons": reasons, "todo": TODO[level],
-            "helplines": HELPLINES if level != "green" else [],
-            "claimed": [b["id"] for b in claimed], "hosts": list(dict.fromkeys(hosts))}
+    return ({"level": level, "head": HEADS[level], "reasons": reasons, "todo": TODO[level],
+             "helplines": HELPLINES if level != "green" else [],
+             "claimed": [b["id"] for b in claimed], "hosts": list(dict.fromkeys(hosts))}, detail)
+
+
+# 行の印の短い説明（製品や言語ごとに言い回しを変えてよい。共通の見本では比べない）
+MARK_LABELS = {
+    "not_in_ledger": "割符にない会社の名前",
+    "disguised": "本当の行き先をごまかしたリンク",
+    "idn": "ふつう使わない文字のリンク",
+    "mimic": "会社の名前に似せたリンク",
+    "off_domain": "名乗った会社の公式の住所ではないリンク",
+    "shortener": "行き先が見えない短縮URL",
+    "unknown_domain": "登録された公式の住所ではないリンク",
+    "phone": "電話番号（本物かは確かめられない）",
+    "pressure": "詐欺によくある言いまわし",
+    "takeover": "乗っ取りの入口によくある頼みごと",
+}
+_HOST_CODES = frozenset({"disguised", "idn", "mimic", "off_domain", "shortener", "unknown_domain"})
+
+
+def marks(lines: Iterable[str], ledger: Iterable[str], brands: Optional[List[dict]] = None) -> List[dict]:
+    """文面の「どの行が」引っかかったか（画面写真に枠を付ける・文面に印を付けるため）。
+
+    lines は文面を行に分けたもの（画面写真から読んだ1行ずつ など）。判定は行を改行でつないだ文面で行い、
+    その赤と黄の理由を、理由のもとになった行に割り当てる。答え（色・理由）は judge と同じで、変えない。
+    青の理由（割符が合った所）には印を付けない＝「印の無い所は安全」と読ませないため。
+    返すのは [{"line": 行の番号, "level": "red" | "amber", "codes": [...], "labels": [...]}]（印のある行だけ、行の順）。"""
+    brands = BRANDS if brands is None else brands
+    lines = list(lines)
+    _, detail = _judge("\n".join(lines), ledger, brands)
+    out: List[dict] = []
+    for i, line in enumerate(lines):
+        low = _norm(line)
+        urls, bare, plain = _scan(line)
+        hosts = set(h for h in (host_of(u) for u in urls) if h) | set(bare)
+        rank, codes, labels = 0, [], []
+        for code, level, target in detail:
+            if level == 0 or code in codes:
+                continue
+            if code == "not_in_ledger":
+                b = next((b for b in brands if b["id"] == target), None)
+                hit = b is not None and any(_norm(w) in low for w in b["words"])
+            elif code in _HOST_CODES:
+                hit = target in hosts
+            elif code == "phone":
+                hit = bool(_PHONE.search(plain))
+            elif code == "pressure":
+                hit = any(w in low for w, _ in PRESSURE)
+            elif code == "takeover":
+                hit = any(p.search(low) for p, _ in _TAKEOVER)
+            else:
+                hit = False
+            if hit:
+                rank = max(rank, level)
+                codes.append(code)
+                labels.append(MARK_LABELS[code])
+        if codes:
+            out.append({"line": i, "level": ("green", "amber", "red")[rank], "codes": codes, "labels": labels})
+    return out
