@@ -37,6 +37,8 @@
 | 「@」で行き先をごまかす（ブラウザは @ の後ろへ行く） | `【楽天カード】ご確認 https://www.rakuten-card.co.jp:443@evil.example/login` | 赤 | `in_ledger` `disguised` `off_domain` |
 | 「\」で行き先をごまかす（ブラウザは \ を / と読む） | `【楽天カード】ご確認 https://evil.example\@www.rakuten-card.co.jp/login` | 赤 | `in_ledger` `disguised` `off_domain` |
 | https:// を外したリンク（メッセージアプリでは押せる） | `【楽天カード】ご利用確認はこちら rakuten-card-login.com` | 赤 | `in_ledger` `mimic` |
+| 機種変更を口実に、パスキーを作り直させる | `【Amazon】機種変更に伴い、パスキーの再登録が必要です https://amazon-passkey.example/` | 赤 | `in_ledger` `mimic` `takeover` |
+| 本人確認を口実に、自撮りと免許証を送らせる | `【楽天カード】本人確認のため、自撮り写真と運転免許証をアップロードしてください https://rakuten-card-kyc.example/` | 赤 | `in_ledger` `mimic` `takeover` |
 | AI が書いたような自然な文面でも | `【楽天カード】いつも楽天カードをご利用いただき、誠にありがとうございます。ご登録情報の確認をお願いしております。お手数ですが下記よりご確認ください。 https://rakuten-card.secure-info.example/` | 赤 | `in_ledger` `mimic` |
 
 最後の行のとおり、文章がどれだけ自然でも、答えは変わりません。勘合は文章のうまさを見ていないからです。
@@ -47,6 +49,8 @@
 |---|---|---|---|
 | 短縮 URL（行き先が見えない） | `【Amazon】お届け先の確認 https://bit.ly/3abcde` | 黄 | `in_ledger` `shortener` |
 | 電話をかけさせる | `【楽天カード】ご利用確認のため 0120-123-456 までお電話ください` | 黄 | `in_ledger` `phone` |
+| 確認コードを言わせる（リンクも電話番号も無い） | `【楽天カード】サポート窓口です。SMSに届いた6桁の番号を教えてください` | 黄 | `in_ledger` `takeover` |
+| 遠隔操作のアプリを入れさせる | `サポートのため、AnyDeskを入れて画面を共有し、届いた認証コードを伝えてください` | 黄 | `no_claim` `takeover` |
 | リンク無しで返信を求める（誰にでも届く会社を名乗る） | `【国税庁】還付金があります。このメールに返信してください` | 黄 | `nothing_to_check` |
 | 会社を名乗らずに急がせる | `お客様のアカウントは24時間以内に停止されます` | 黄 | `no_claim` `pressure` |
 | 会社を名乗らない投資の誘い | `必ず儲かる投資グループにご招待します。LINEで友だち追加してください` | 黄 | `no_claim` |
@@ -76,6 +80,7 @@
 | 使っている会社を台帳に入れ忘れた（誤った赤） | `【三井住友カード】ご利用明細のお知らせ https://www.smbc-card.com/` | 赤 | `not_in_ledger` `official` |
 | 一覧にない会社（見分けられない） | `【〇〇信用金庫】口座の確認をお願いします https://shinkin-check.example/` | 黄 | `no_claim` `unknown_domain` |
 | リンクの直後に日本語が続く（誤った赤。住所に日本語が混ざったとみなす） | `【楽天カード】詳しくは https://www.rakuten-card.co.jpをご覧ください` | 赤 | `in_ledger` `idn` |
+| 本物の会社からの、顔認証の作り直しのお願い（青にしない。公式アプリから自分で操作する方が安全なので、黄にしている） | `【ドコモ】顔認証の再設定をお願いします https://www.docomo.ne.jp/` | 黄 | `in_ledger` `official` `takeover` |
 
 誤った青は、勘合がいちばん避けたいものです。上の3つは、勘合が照らし合わせていないもの（公式の住所の中での転送・メールアドレス・LINE の ID）が使われた例です。名乗った会社が台帳にあっても、**返信・友だち追加・電話・アプリの入れ直しなどを求められたら、連絡の中の案内は使わず、自分で確かめた窓口から確かめてください。**
 
