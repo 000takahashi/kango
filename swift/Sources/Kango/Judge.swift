@@ -10,6 +10,17 @@ public struct Verdict: Equatable, Sendable {
     public struct Reason: Equatable, Sendable {
         public let code: String
         public let text: String
+        /// この理由の色と、何についての理由か（リンク先の住所、または会社の id）。
+        /// 行に印を付ける `Judge.marks` だけが使う（Python の judge の答えにも出さない）。
+        let level: Level
+        let target: String?
+
+        init(code: String, text: String, level: Level, target: String? = nil) {
+            self.code = code
+            self.text = text
+            self.level = level
+            self.target = target
+        }
     }
 
     public let level: Level
@@ -168,8 +179,8 @@ public enum Judge {
         var reasons: [Verdict.Reason] = []
         var level = Verdict.Level.green
 
-        func say(_ code: String, _ text: String, _ l: Verdict.Level) {
-            reasons.append(.init(code: code, text: text))
+        func say(_ code: String, _ text: String, _ l: Verdict.Level, _ target: String? = nil) {
+            reasons.append(.init(code: code, text: text, level: l, target: target))
             level = max(level, l)
         }
 
@@ -178,9 +189,9 @@ public enum Judge {
         }
         for b in claimed where b.kind == .contract {
             if ledger.contains(b.id) {
-                say("in_ledger", "「\(b.name)」はあなたの割符にあります。", .green)
+                say("in_ledger", "「\(b.name)」はあなたの割符にあります。", .green, b.id)
             } else {
-                say("not_in_ledger", "「\(b.name)」を名乗っていますが、あなたの割符（契約している会社）にありません。", .red)
+                say("not_in_ledger", "「\(b.name)」を名乗っていますが、あなたの割符（契約している会社）にありません。", .red, b.id)
             }
         }
 
@@ -189,31 +200,31 @@ public enum Judge {
             (authority(of: u, shownPattern) ?? "").contains { $0 == "@" || $0 == "\\" }
         }.compactMap(host(of:)))
         for h in tricked {
-            say("disguised", "リンクの住所に「@」や「\\」を使った見せかけがあります。本当の行き先は「\(h)」です。", .red)
+            say("disguised", "リンクの住所に「@」や「\\」を使った見せかけがあります。本当の行き先は「\(h)」です。", .red, h)
         }
 
         for h in hosts {
             if shorteners.contains(h) {
-                say("shortener", "リンク（\(h)）は短縮URLで、行き先が見えません。", .amber)
+                say("shortener", "リンク（\(h)）は短縮URLで、行き先が見えません。", .amber, h)
                 continue
             }
             if h.hasPrefix("xn--") || h.contains(".xn--") || !hasOnlyHostChars(h) {
-                say("idn", "リンク先「\(h)」は、ふつうの住所には使わない文字を含んでいます。見た目を似せる手口に使われます。", .red)
+                say("idn", "リンク先「\(h)」は、ふつうの住所には使わない文字を含んでいます。見た目を似せる手口に使われます。", .red, h)
                 continue
             }
             let owner = brands.first { isOfficial(h, $0) }
             if !claimed.isEmpty && !claimed.contains(where: { isOfficial(h, $0) }) {
                 if let look = mimicked(h, in: claimed) {
-                    say("mimic", "リンク先「\(h)」は「\(look.name)」に似せた住所ですが、公式の住所ではありません。", .red)
+                    say("mimic", "リンク先「\(h)」は「\(look.name)」に似せた住所ですが、公式の住所ではありません。", .red, h)
                 } else {
-                    say("off_domain", "リンク先「\(h)」は、名乗った会社の公式の住所ではありません。", .red)
+                    say("off_domain", "リンク先「\(h)」は、名乗った会社の公式の住所ではありません。", .red, h)
                 }
             } else if let owner {
-                say("official", "リンク先「\(h)」は「\(owner.name)」の公式の住所と一致しました。", .green)
+                say("official", "リンク先「\(h)」は「\(owner.name)」の公式の住所と一致しました。", .green, h)
             } else if let look = mimicked(h, in: brands) {
-                say("mimic", "リンク先「\(h)」は「\(look.name)」に似せた住所ですが、公式の住所ではありません。", .red)
+                say("mimic", "リンク先「\(h)」は「\(look.name)」に似せた住所ですが、公式の住所ではありません。", .red, h)
             } else {
-                say("unknown_domain", "リンク先「\(h)」は、登録された公式の住所ではありません。", .amber)
+                say("unknown_domain", "リンク先「\(h)」は、登録された公式の住所ではありません。", .amber, h)
             }
         }
 
