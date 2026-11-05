@@ -380,6 +380,98 @@
   "checked": "2026-11-02"
  },
  {
+  "id": "jaccs",
+  "name": "ジャックス",
+  "kind": "contract",
+  "words": [
+   "ジャックス",
+   "jaccs"
+  ],
+  "domains": [
+   "jaccs.co.jp"
+  ],
+  "stems": [
+   "jaccs"
+  ],
+  "checked": "2026-11-05"
+ },
+ {
+  "id": "uccard",
+  "name": "UCカード",
+  "kind": "contract",
+  "words": [
+   "UCカード",
+   "uc card",
+   "uccard",
+   "アットユーネット"
+  ],
+  "domains": [
+   "uccard.co.jp",
+   "saisoncard.co.jp"
+  ],
+  "stems": [
+   "uccard",
+   "atunet"
+  ],
+  "checked": "2026-11-05"
+ },
+ {
+  "id": "micard",
+  "name": "エムアイカード",
+  "kind": "contract",
+  "words": [
+   "エムアイカード",
+   "miカード",
+   "mi card",
+   "micard"
+  ],
+  "domains": [
+   "micard.co.jp"
+  ],
+  "stems": [
+   "micard"
+  ],
+  "checked": "2026-11-05"
+ },
+ {
+  "id": "toyotafinance",
+  "name": "トヨタファイナンス",
+  "kind": "contract",
+  "words": [
+   "トヨタファイナンス",
+   "toyota finance",
+   "ts cubic",
+   "tscubic"
+  ],
+  "domains": [
+   "toyota-finance.co.jp",
+   "tscubic.com"
+  ],
+  "stems": [
+   "toyota-finance",
+   "toyotafinance",
+   "tscubic"
+  ],
+  "checked": "2026-11-05"
+ },
+ {
+  "id": "pocketcard",
+  "name": "ポケットカード",
+  "kind": "contract",
+  "words": [
+   "ポケットカード",
+   "pocketcard",
+   "pocket card"
+  ],
+  "domains": [
+   "pocketcard.co.jp"
+  ],
+  "stems": [
+   "pocketcard"
+  ],
+  "checked": "2026-11-05"
+ },
+ {
   "id": "yamato",
   "name": "ヤマト運輸",
   "kind": "everyone",
