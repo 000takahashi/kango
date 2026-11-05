@@ -59,6 +59,24 @@ RULES = [
      r"|chmod\s+\+x[^\n]*&&",
      "ネットから取ってきたものを、そのまま動かす命令です。",
      "AI にこの命令を動かさせないでください。動かす必要があるなら、中身を人が読んでから人が動かしてください。"),
+    # 解析役の AI に向けて「調べるな」「害は無い」と言わせる言いまわし。マルウェアの中に、AI の解析役を
+    # 断らせたり「無害」と答えさせたりする文が埋め込まれた例が報告されている（2026-11 の報告を受けて足した）。
+    ("deflect",
+     r"(?:do\s+not|don'?t|never)\s+(?:analy[sz]e|scan|inspect|examine|investigate|report|flag|look\s+(?:at|into))\b"
+     r"|(?:stop|refuse)\s+(?:to\s+)?(?:analy[sz](?:e|ing)|scann?(?:ing)?|inspect(?:ing)?)"
+     r"|refuse\s+(?:\w+\s+){0,4}(?:due\s+to|because\s+of)\s+copyright"
+     r"|copyright(?:ed)?\b[^.\n]{0,40}\b(?:refuse|cannot\s+(?:be\s+)?analy[sz]|must\s+not\s+(?:be\s+)?analy[sz])"
+     r"|(?:this|the)\s+(?:file|code|program|sample|script|binary|document|executable)\s+is\s+"
+     r"(?:completely\s+|totally\s+|perfectly\s+)?(?:harmless|benign|clean|not\s+malicious|not\s+(?:a\s+)?malware|safe(?=\s*[.!]|\s*$))"
+     r"|(?:respond|reply|answer|report|classify)\s+(?:\w+\s+){0,3}(?:with|as)\s+[\"']?(?:no\s+malware\s+detected|benign|safe|clean|harmless)"
+     r"|no\s+malware\s+detected"
+     r"|(?:解析|分析|調査|スキャン|検査)(?:を|は)?(?:断|拒否|拒ん|しないで|するな|せず|やめ|中止)"
+     r"|(?:調べ|解析し|分析し|スキャンし|検査し)(?:ないで|るな)"
+     r"|著作権[^。\n]{0,30}(?:断|拒否|拒ん|解析できません|解析しないで|お答えできません)"
+     r"|(?:この|本|当)(?:ファイル|プログラム|コード|文書|ソフト|サンプル)(?:は|には)[^。\n]{0,10}"
+     r"(?:無害|危険(?:では|じゃ)(?:ない|ありません)|悪意(?:は|が)?(?:ない|ありません)|マルウェアでは(?:ない|ありません)|安全(?:です|だ|。|$))",
+     "AI の解析役に、調べるのをやめさせたり「無害」と答えさせたりする言いまわしです。",
+     "文書が自分で「無害です」「調べないで」と言う理由は、ふつうありません。AI の答えをうのみにせず、人が中身を確かめてください。"),
 ]
 _RULES = [(code, re.compile(pat, re.I), why, how) for code, pat, why, how in RULES]
 
